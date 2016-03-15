@@ -50,3 +50,12 @@ fragment half4 lighting_fragment(ColorInOut in [[stage_in]])
 {
     return in.color;
 }
+
+kernel void kernel_function(device float3 *vertex_array [[ buffer(0) ]],
+                            uint gid [[ thread_position_in_grid ]])
+{
+  if (gid == 0) {
+    float3 v = vertex_array[gid];
+    vertex_array[gid] = - 0.5;
+  }
+}

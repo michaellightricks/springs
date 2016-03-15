@@ -14,6 +14,7 @@
 		6478F89D1C8C979C00AFB932 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6478F89B1C8C979C00AFB932 /* Main.storyboard */; };
 		6478F89F1C8C979C00AFB932 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6478F89E1C8C979C00AFB932 /* Assets.xcassets */; };
 		6478F8A21C8C979C00AFB932 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6478F8A01C8C979C00AFB932 /* LaunchScreen.storyboard */; };
+		6478F8E61C9850D800AFB932 /* PhysicalSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8E51C9850D800AFB932 /* PhysicalSystem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,8 @@
 		6478F89E1C8C979C00AFB932 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6478F8A11C8C979C00AFB932 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6478F8A31C8C979C00AFB932 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6478F8E41C9850D800AFB932 /* PhysicalSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhysicalSystem.h; sourceTree = "<group>"; };
+		6478F8E51C9850D800AFB932 /* PhysicalSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhysicalSystem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +75,8 @@
 				6478F8A01C8C979C00AFB932 /* LaunchScreen.storyboard */,
 				6478F8A31C8C979C00AFB932 /* Info.plist */,
 				6478F88F1C8C979C00AFB932 /* Supporting Files */,
+				6478F8E41C9850D800AFB932 /* PhysicalSystem.h */,
+				6478F8E51C9850D800AFB932 /* PhysicalSystem.m */,
 			);
 			path = Springs;
 			sourceTree = "<group>";
@@ -156,6 +161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6478F8991C8C979C00AFB932 /* Shaders.metal in Sources */,
+				6478F8E61C9850D800AFB932 /* PhysicalSystem.m in Sources */,
 				6478F8941C8C979C00AFB932 /* AppDelegate.m in Sources */,
 				6478F8971C8C979C00AFB932 /* GameViewController.m in Sources */,
 				6478F8911C8C979C00AFB932 /* main.m in Sources */,
@@ -307,6 +313,7 @@
 				6478F8A81C8C979C00AFB932 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
