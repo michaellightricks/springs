@@ -4,16 +4,17 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 
-#import <simd/simd.h>
+#import "Definitions.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-typedef vector_float3 positionType;
 
 @interface SystemState : NSObject
 
 - (instancetype)initWithPositions:(positionType *)points length:(NSUInteger)length
                            device:(id<MTLDevice>)device;
+
+- (instancetype)initWithPositionsBuffer:(id<MTLBuffer>)buffer verticesCount:(NSUInteger)count
+                                 device:(id<MTLDevice>)device;
 
 - (positionType)getPositionAtIndex:(NSUInteger)index;
 

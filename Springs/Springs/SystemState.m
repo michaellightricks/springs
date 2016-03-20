@@ -31,6 +31,23 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
+- (instancetype)initWithPositionsBuffer:(id<MTLBuffer>)buffer verticesCount:(NSUInteger)count
+                                 device:(id<MTLDevice>)device {
+  if (self = [super init]) {
+    _verticesCount = count;
+    
+    self.positions = buffer;
+    self.prevPositions =
+        [device newBufferWithBytes:[buffer contents] length:buffer.length options:0];
+    
+    self.forces = [device newBufferWithLength:(sizeof(positionType) * _verticesCount)  options:0];
+    self.pinned = [device newBufferWithLength:(sizeof(BOOL) * _verticesCount) options:0];
+  }
+  
+  return self;
+
+}
+
 - (void)pinVertexAtIndex:(NSUInteger)index atPosition:(vector_float3)newPosition {
   BOOL *buffer = (BOOL *)[self.pinned contents];
   

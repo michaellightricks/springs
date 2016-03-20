@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PhysicalSystem()
 
 @property (strong, nonatomic) id<Integrator> integrator;
-@property (strong, nonatomic) NSArray<id<ForceSource> > *forces;
+@property (strong, nonatomic) NSMutableArray<id<ForceSource> > *forces;
 @property (nonatomic) float dT;
 @property (nonatomic) float dTSQ;
 @property (nonatomic, nullable) positionType * tempPositions;
@@ -17,18 +17,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation PhysicalSystem
 
-- (instancetype)initWithState:(SystemState *)state integrator:(id<Integrator>)integrator
-                       forces:(NSArray<id<ForceSource> > *)forces {
+- (instancetype)initWithState:(SystemState *)state integrator:(id<Integrator>)integrator {
   if (self = [super init]) {
     _integrator = integrator;
-    _forces = [forces copy];
     _dT = 0.2;
     _dTSQ = _dT * _dT;
     
     self.tempPositions = (positionType *)malloc(state.verticesCount * sizeof(positionType));
+    self.forces = [[NSMutableArray alloc] init];
   }
   
   return self;
+}
+
+- (void)addForcesSource:(id<ForceSource>)source {
+  [self.forces addObject:source];
 }
 
 - (void)integrateTimeStep {

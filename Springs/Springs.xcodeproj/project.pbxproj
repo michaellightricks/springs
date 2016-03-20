@@ -18,6 +18,11 @@
 		6478F8EF1C99787400AFB932 /* SystemState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8EE1C99787400AFB932 /* SystemState.m */; };
 		6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.m */; };
 		6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.m */; };
+		6478F90E1C9AABB400AFB932 /* TriangleMeshAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F90D1C9AABB400AFB932 /* TriangleMeshAdapter.mm */; };
+		6478F9131C9AB4E700AFB932 /* PhysicalSystemReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9121C9AB4E700AFB932 /* PhysicalSystemReader.m */; };
+		6478F9161C9AB5BB00AFB932 /* DDFileReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9151C9AB5BB00AFB932 /* DDFileReader.m */; };
+		6478F9191C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9181C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m */; };
+		6478F91C1C9ADEFE00AFB932 /* MTKMeshAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F91B1C9ADEFE00AFB932 /* MTKMeshAdapter.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,9 +45,20 @@
 		6478F8F01C997A7D00AFB932 /* CPUVerletIntegrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPUVerletIntegrator.h; sourceTree = "<group>"; };
 		6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPUVerletIntegrator.m; sourceTree = "<group>"; };
 		6478F8F31C997ABA00AFB932 /* Protocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Protocols.h; sourceTree = "<group>"; };
-		6478F9081C99C89300AFB932 /* VectorAlgebra.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VectorAlgebra.h; sourceTree = "<group>"; };
+		6478F9081C99C89300AFB932 /* Definitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Definitions.h; sourceTree = "<group>"; };
 		6478F9091C99CE0000AFB932 /* CPUSpringForcesSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPUSpringForcesSource.h; sourceTree = "<group>"; };
 		6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPUSpringForcesSource.m; sourceTree = "<group>"; };
+		6478F90C1C9AABB400AFB932 /* TriangleMeshAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriangleMeshAdapter.h; sourceTree = "<group>"; };
+		6478F90D1C9AABB400AFB932 /* TriangleMeshAdapter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TriangleMeshAdapter.mm; sourceTree = "<group>"; };
+		6478F9101C9AB41300AFB932 /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
+		6478F9111C9AB4E700AFB932 /* PhysicalSystemReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhysicalSystemReader.h; sourceTree = "<group>"; };
+		6478F9121C9AB4E700AFB932 /* PhysicalSystemReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhysicalSystemReader.m; sourceTree = "<group>"; };
+		6478F9141C9AB5BB00AFB932 /* DDFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDFileReader.h; sourceTree = "<group>"; };
+		6478F9151C9AB5BB00AFB932 /* DDFileReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDFileReader.m; sourceTree = "<group>"; };
+		6478F9171C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CPUSpringPhysicalSystem.h; path = ../CPUSpringPhysicalSystem.h; sourceTree = "<group>"; };
+		6478F9181C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CPUSpringPhysicalSystem.m; path = ../CPUSpringPhysicalSystem.m; sourceTree = "<group>"; };
+		6478F91A1C9ADEFE00AFB932 /* MTKMeshAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTKMeshAdapter.h; sourceTree = "<group>"; };
+		6478F91B1C9ADEFE00AFB932 /* MTKMeshAdapter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MTKMeshAdapter.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +75,8 @@
 		6478F8831C8C979C00AFB932 = {
 			isa = PBXGroup;
 			children = (
+				6478F9141C9AB5BB00AFB932 /* DDFileReader.h */,
+				6478F9151C9AB5BB00AFB932 /* DDFileReader.m */,
 				6478F88E1C8C979C00AFB932 /* Springs */,
 				6478F88D1C8C979C00AFB932 /* Products */,
 			);
@@ -81,8 +99,6 @@
 				6478F8961C8C979C00AFB932 /* GameViewController.m */,
 				6478F8981C8C979C00AFB932 /* Shaders.metal */,
 				6478F89A1C8C979C00AFB932 /* SharedStructures.h */,
-				6478F8E41C9850D800AFB932 /* PhysicalSystem.h */,
-				6478F8E51C9850D800AFB932 /* PhysicalSystem.mm */,
 				6478F89B1C8C979C00AFB932 /* Main.storyboard */,
 				6478F89E1C8C979C00AFB932 /* Assets.xcassets */,
 				6478F8A01C8C979C00AFB932 /* LaunchScreen.storyboard */,
@@ -93,9 +109,20 @@
 				6478F8F01C997A7D00AFB932 /* CPUVerletIntegrator.h */,
 				6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.m */,
 				6478F8F31C997ABA00AFB932 /* Protocols.h */,
-				6478F9081C99C89300AFB932 /* VectorAlgebra.h */,
+				6478F9081C99C89300AFB932 /* Definitions.h */,
 				6478F9091C99CE0000AFB932 /* CPUSpringForcesSource.h */,
 				6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.m */,
+				6478F90C1C9AABB400AFB932 /* TriangleMeshAdapter.h */,
+				6478F90D1C9AABB400AFB932 /* TriangleMeshAdapter.mm */,
+				6478F9101C9AB41300AFB932 /* Mesh.h */,
+				6478F9111C9AB4E700AFB932 /* PhysicalSystemReader.h */,
+				6478F9121C9AB4E700AFB932 /* PhysicalSystemReader.m */,
+				6478F8E41C9850D800AFB932 /* PhysicalSystem.h */,
+				6478F8E51C9850D800AFB932 /* PhysicalSystem.mm */,
+				6478F9171C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.h */,
+				6478F9181C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m */,
+				6478F91A1C9ADEFE00AFB932 /* MTKMeshAdapter.h */,
+				6478F91B1C9ADEFE00AFB932 /* MTKMeshAdapter.mm */,
 			);
 			path = Springs;
 			sourceTree = "<group>";
@@ -179,8 +206,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6478F9161C9AB5BB00AFB932 /* DDFileReader.m in Sources */,
 				6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.m in Sources */,
+				6478F91C1C9ADEFE00AFB932 /* MTKMeshAdapter.mm in Sources */,
+				6478F90E1C9AABB400AFB932 /* TriangleMeshAdapter.mm in Sources */,
+				6478F9131C9AB4E700AFB932 /* PhysicalSystemReader.m in Sources */,
 				6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.m in Sources */,
+				6478F9191C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m in Sources */,
 				6478F8991C8C979C00AFB932 /* Shaders.metal in Sources */,
 				6478F8E61C9850D800AFB932 /* PhysicalSystem.mm in Sources */,
 				6478F8941C8C979C00AFB932 /* AppDelegate.m in Sources */,

@@ -3,7 +3,7 @@
 
 #import "SystemState.h"
 #import "CPUVerletIntegrator.h"
-#import "VectorAlgebra.h"
+#import "Definitions.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

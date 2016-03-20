@@ -9,6 +9,8 @@
 #import "GameViewController.h"
 #import "SharedStructures.h"
 
+#import "CPUSpringPhysicalSystem.h"
+
 @import simd;
 @import ModelIO;
 
@@ -44,6 +46,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   
   // meshes
   MTKMesh *_boxMesh;
+  
+  CPUSpringPhysicalSystem *_physicalSystem;
 }
 
 - (void)viewDidLoad
@@ -58,6 +62,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   {
       [self _setupView];
       [self _loadAssets];
+      [self _initPhysicalSystem];
       [self _reshape];
   }
   else // Fallback to a blank UIView, an application could also fallback to OpenGL ES here.
@@ -87,6 +92,14 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   
   // Load all the shader files with a metal file extension in the project
   _defaultLibrary = [_device newDefaultLibrary];
+  
+  // Allocate one region of memory for the uniform buffer
+  _dynamicConstantBuffer = [_device newBufferWithLength:kMaxBytesPerFrame options:0];
+  _dynamicConstantBuffer.label = @"UniformBuffer";
+}
+
+- (void)_initPhysicalSystem {
+  _physicalSystem = [[CPUSpringPhysicalSystem alloc] initWithDevice:_device mesh:_boxMesh];
 }
 
 - (void)_loadAssets
@@ -97,10 +110,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
                                      allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
   
   _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
-  
-  // Allocate one region of memory for the uniform buffer
-  _dynamicConstantBuffer = [_device newBufferWithLength:kMaxBytesPerFrame options:0];
-  _dynamicConstantBuffer.label = @"UniformBuffer";
   
   // Load the fragment program into the library
   id <MTLFunction> fragmentProgram = [_defaultLibrary newFunctionWithName:@"lighting_fragment"];
@@ -200,18 +209,19 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_compute
 {
-  id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-  id<MTLComputeCommandEncoder> commandEncoder = [commandBuffer computeCommandEncoder];
- 
-  [commandEncoder setComputePipelineState:_computePipelineState];
-  [commandEncoder setBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset
-                    atIndex:0];
- 
-  [commandEncoder dispatchThreadgroups:MTLSizeMake(1, 1, 1)
-                 threadsPerThreadgroup:MTLSizeMake(_boxMesh.vertexCount, 1, 1)];
-  [commandEncoder endEncoding];
-  
-  [commandBuffer commit];
+  [_physicalSystem integrateTimeStep];
+//  id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+//  id<MTLComputeCommandEncoder> commandEncoder = [commandBuffer computeCommandEncoder];
+// 
+//  [commandEncoder setComputePipelineState:_computePipelineState];
+//  [commandEncoder setBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset
+//                    atIndex:0];
+// 
+//  [commandEncoder dispatchThreadgroups:MTLSizeMake(1, 1, 1)
+//                 threadsPerThreadgroup:MTLSizeMake(_boxMesh.vertexCount, 1, 1)];
+//  [commandEncoder endEncoding];
+//  
+//  [commandBuffer commit];
 }
 
 - (void)_reshape
@@ -228,6 +238,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(_rotation, 0.0f, 1.0f, 0.0f));
   matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
   matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
+  
   
   // Load constant buffer data into appropriate buffer at current index
   uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[_constantDataBufferIndex];

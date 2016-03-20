@@ -5,6 +5,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#define THRESHOLD (0.0001)
+
 @interface CPUSpringForcesSource()
 
 @property (nonatomic) NSUInteger elementsCount;
@@ -32,8 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
     
     positionType force = (pos1 - pos2) * element.k;
     
-    forces[element.idx1] += force;
-    forces[element.idx2] -= force;
+    float sqLength = force.x * force.x + force.y * force.y + force.z * force.z;
+    if (sqLength > THRESHOLD) {
+      forces[element.idx1] += force;
+      forces[element.idx2] -= force;
+    }
   }
 }
 

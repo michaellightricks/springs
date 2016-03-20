@@ -9,12 +9,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef struct SpringElementType {
-  size_t idx1;
-  size_t idx2;
-  float k;
-} SpringElement;
-
 @interface CPUSpringForcesSource : NSObject<ForceSource>
 
 - (instancetype)initWithElements:(SpringElement *)elements count:(NSUInteger)count;
