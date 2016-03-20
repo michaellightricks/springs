@@ -12,6 +12,7 @@ typedef UInt16 indexType;
 typedef struct SpringElementType {
   indexType idx1;
   indexType idx2;
+  float restLength;
   float k;
 } SpringElement;
 

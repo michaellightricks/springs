@@ -3,6 +3,8 @@
 
 #import "CPUSpringForcesSource.h"
 
+#import <simd/simd.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 #define THRESHOLD (0.0001)
@@ -29,10 +31,16 @@ NS_ASSUME_NONNULL_BEGIN
   
   for (size_t i = 0; i < self.elementsCount; ++i) {
     SpringElement element = self.elements[i];
+    
+    vector_float3 ff;
+    NSLog(@"%@", ff);
+    
     positionType pos1 = [state getPositionAtIndex:element.idx1];
     positionType pos2 = [state getPositionAtIndex:element.idx2];
     
-    positionType force = (pos1 - pos2) * element.k;
+    float distance = simd::distance(pos1, pos2);
+    
+    positionType force = (pos1 - pos2) / distance * (distance - element.restLength) * element.k;
     
     float sqLength = force.x * force.x + force.y * force.y + force.z * force.z;
     if (sqLength > THRESHOLD) {

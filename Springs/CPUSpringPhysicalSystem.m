@@ -10,11 +10,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-uint indices[6] = {0, 1, 2, 0, 3, 2};
-float vertices[12] = {0.0f, 0.0f, 10.0f,
-                      0.0f, 1.0f, 10.0f,
-                      1.0f, 1.0f, 10.0f,
-                      1.0f, 0.0f, 10.0f};
+
+@interface CPUSpringPhysicalSystem()
+
+@property (strong, nonatomic) MTKMeshAdapter *adapter;
+
+@end
 
 @implementation CPUSpringPhysicalSystem
 
@@ -27,12 +28,12 @@ float vertices[12] = {0.0f, 0.0f, 10.0f,
   
   if (self = [super initWithState:state integrator:integrator]) {
    
-    MTKMeshAdapter *adapter = [[MTKMeshAdapter alloc] initWithMesh:mesh device:device];
+    self.adapter = [[MTKMeshAdapter alloc] initWithMesh:mesh device:device];
     
-    SpringElement *springs = [adapter springsPtr];
+    SpringElement *springs = [self.adapter springsPtr];
     
     CPUSpringForcesSource *forcesSource =
-    [[CPUSpringForcesSource alloc] initWithElements:springs count:adapter.springsCount];
+    [[CPUSpringForcesSource alloc] initWithElements:springs count:self.adapter.springsCount];
 
     [self addForcesSource:forcesSource];
   }

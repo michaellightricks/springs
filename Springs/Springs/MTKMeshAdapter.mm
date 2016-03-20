@@ -37,29 +37,23 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
   return NO;
 }
 
-SpringElement getSpringElement(uint idx1, uint idx2, float k) {
-  SpringElement elem;
-  elem.idx1 = idx1;
-  elem.idx2 = idx2;
-  elem.k = k;
-  
-  return elem;
-}
 
 @implementation MTKMeshAdapter
 
 - (instancetype) initWithMesh:(MTKMesh *)mesh device:(id<MTLDevice>)device {
 
   if (self = [super init]) {
+    self.K = 100;
     vertices.resize(mesh.vertexCount);
     MTKSubmesh *submesh = mesh.submeshes[0];
 
     assert(submesh.indexType == MTLIndexTypeUInt16);
-    [self addSpringsFromTriangles:submesh];
     
     self.trianglesBuffer = submesh.indexBuffer.buffer;
     self.springsBuffer = [self createSpringElementsBuffer:device];
     self.positionsBuffer = mesh.vertexBuffers[0].buffer;
+    
+    [self addSpringsFromTriangles:submesh];
     
     _verticesCount = mesh.vertexCount;
   }
@@ -84,9 +78,9 @@ SpringElement getSpringElement(uint idx1, uint idx2, float k) {
     
     SpringElement elements[3];
     
-    elements[0] = getSpringElement(triangle.idx1, triangle.idx2, self.K);
-    elements[1] = getSpringElement(triangle.idx1, triangle.idx3, self.K);
-    elements[2] = getSpringElement(triangle.idx2, triangle.idx3, self.K);
+    elements[0] = [self getSpringElementFromIdx1:triangle.idx1 idx2:triangle.idx2 k:self.K];
+    elements[1] = [self getSpringElementFromIdx1:triangle.idx1 idx2:triangle.idx3 k:self.K];
+    elements[2] = [self getSpringElementFromIdx1:triangle.idx2 idx2:triangle.idx3 k:self.K];
     
     for (int elem = 0; elem < 3; ++elem) {
       SpringElement& spring = elements[elem];
@@ -111,6 +105,24 @@ SpringElement getSpringElement(uint idx1, uint idx2, float k) {
   
   _springsCount = springs.size();
 }
+
+- (SpringElement)getSpringElementFromIdx1:(uint)idx1 idx2:(uint)idx2 k:(float)k {
+  SpringElement elem;
+  elem.idx1 = idx1;
+  elem.idx2 = idx2;
+  elem.k = k;
+  
+  positionType *ptr = (positionType *)[self.positionsBuffer contents];
+
+  positionType p1 = *(ptr + idx1);
+  
+  positionType p2 = *(ptr + idx2);
+  
+  elem.restLength = simd::distance(p1, p2);
+  
+  return elem;
+}
+
 
 - (id<MTLBuffer>)createSpringElementsBuffer:(id<MTLDevice>)device {
   // springs buffer layout is vertices.size X (maxSpringsCount + 1) matrix

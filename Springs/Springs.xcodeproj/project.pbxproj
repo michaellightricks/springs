@@ -17,7 +17,7 @@
 		6478F8E61C9850D800AFB932 /* PhysicalSystem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8E51C9850D800AFB932 /* PhysicalSystem.mm */; };
 		6478F8EF1C99787400AFB932 /* SystemState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8EE1C99787400AFB932 /* SystemState.m */; };
 		6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.m */; };
-		6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.m */; };
+		6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.mm */; };
 		6478F90E1C9AABB400AFB932 /* TriangleMeshAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F90D1C9AABB400AFB932 /* TriangleMeshAdapter.mm */; };
 		6478F9131C9AB4E700AFB932 /* PhysicalSystemReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9121C9AB4E700AFB932 /* PhysicalSystemReader.m */; };
 		6478F9161C9AB5BB00AFB932 /* DDFileReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9151C9AB5BB00AFB932 /* DDFileReader.m */; };
@@ -47,7 +47,7 @@
 		6478F8F31C997ABA00AFB932 /* Protocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Protocols.h; sourceTree = "<group>"; };
 		6478F9081C99C89300AFB932 /* Definitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Definitions.h; sourceTree = "<group>"; };
 		6478F9091C99CE0000AFB932 /* CPUSpringForcesSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPUSpringForcesSource.h; sourceTree = "<group>"; };
-		6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPUSpringForcesSource.m; sourceTree = "<group>"; };
+		6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CPUSpringForcesSource.mm; sourceTree = "<group>"; };
 		6478F90C1C9AABB400AFB932 /* TriangleMeshAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriangleMeshAdapter.h; sourceTree = "<group>"; };
 		6478F90D1C9AABB400AFB932 /* TriangleMeshAdapter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TriangleMeshAdapter.mm; sourceTree = "<group>"; };
 		6478F9101C9AB41300AFB932 /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
@@ -111,7 +111,7 @@
 				6478F8F31C997ABA00AFB932 /* Protocols.h */,
 				6478F9081C99C89300AFB932 /* Definitions.h */,
 				6478F9091C99CE0000AFB932 /* CPUSpringForcesSource.h */,
-				6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.m */,
+				6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.mm */,
 				6478F90C1C9AABB400AFB932 /* TriangleMeshAdapter.h */,
 				6478F90D1C9AABB400AFB932 /* TriangleMeshAdapter.mm */,
 				6478F9101C9AB41300AFB932 /* Mesh.h */,
@@ -207,7 +207,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6478F9161C9AB5BB00AFB932 /* DDFileReader.m in Sources */,
-				6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.m in Sources */,
+				6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.mm in Sources */,
 				6478F91C1C9ADEFE00AFB932 /* MTKMeshAdapter.mm in Sources */,
 				6478F90E1C9AABB400AFB932 /* TriangleMeshAdapter.mm in Sources */,
 				6478F9131C9AB4E700AFB932 /* PhysicalSystemReader.m in Sources */,
@@ -330,6 +330,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Springs/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = www.lightricks.com.michael.Springs;
@@ -341,6 +342,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Springs/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = www.lightricks.com.michael.Springs;

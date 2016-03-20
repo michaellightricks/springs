@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
     _dT = 0.2;
     _dTSQ = _dT * _dT;
     
+    self.state = state;
     self.tempPositions = (positionType *)malloc(state.verticesCount * sizeof(positionType));
     self.forces = [[NSMutableArray alloc] init];
   }

@@ -1,9 +1,9 @@
 // Copyright (c) 2016 Lightricks. All rights reserved.
 // Created by Michael Kupchick.
 
-@import Foundation;
-@import Metal;
-@import MetalKit;
+#import <Foundation/Foundation.h>
+#import <Metal/Metal.h>
+#import <MetalKit/MetalKit.h>
 
 #import "Protocols.h"
 

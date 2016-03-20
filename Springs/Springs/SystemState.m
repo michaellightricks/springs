@@ -53,10 +53,10 @@ NS_ASSUME_NONNULL_BEGIN
   
   buffer[index] = YES;
 
-  vector_float3 *position = [self getPositionFrom:self.positions atIndex:index];
+  positionType *position = [self getPositionFrom:self.positions atIndex:index];
   *position = newPosition;
   
-  vector_float3 *prevPosition = [self getPositionFrom:self.prevPositions atIndex:index];
+  positionType *prevPosition = [self getPositionFrom:self.prevPositions atIndex:index];
   *prevPosition = newPosition;
   
 //  self.modifiedRange = NSMakeRange(MIN(self.modifiedRange.location, index),
@@ -74,20 +74,20 @@ NS_ASSUME_NONNULL_BEGIN
   return buffer[index];
 }
 
-- (vector_float3)getPositionAtIndex:(NSUInteger)index {
+- (positionType)getPositionAtIndex:(NSUInteger)index {
   return *[self getPositionFrom:self.positions atIndex:index];
 }
 
-- (vector_float3)getPrevPositionAtIndex:(NSUInteger)index {
+- (positionType)getPrevPositionAtIndex:(NSUInteger)index {
   return *[self getPositionFrom:self.prevPositions atIndex:index];
 }
 
-- (vector_float3)getForceAtIndex:(NSUInteger)index {
+- (positionType)getForceAtIndex:(NSUInteger)index {
   return *[self getPositionFrom:self.forces atIndex:index];
 }
 
-- (vector_float3 *)getPositionFrom:(id<MTLBuffer>)buffer atIndex:(NSUInteger)index {
-  vector_float3 *ptr = (vector_float3 *)[buffer contents];
+- (positionType *)getPositionFrom:(id<MTLBuffer>)buffer atIndex:(NSUInteger)index {
+  positionType *ptr = (positionType *)[buffer contents];
   return ptr + index;
 }
 
