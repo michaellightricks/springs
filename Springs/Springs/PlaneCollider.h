@@ -2,16 +2,14 @@
 // Created by Michael Kupchick.
 
 #import <Foundation/Foundation.h>
-#import <Metal/Metal.h>
-#import <MetalKit/MetalKit.h>
 
 #import "Protocols.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CPUVerletIntegrator : NSObject<Integrator>
+@interface PlaneCollider : NSObject<Collider>
 
-- (instancetype)initWithDamping:(float)damping;
+- (instancetype)initWithBoxOrigin:(positionType)origin dimensions:(positionType)dimensions;
 
 @end
 

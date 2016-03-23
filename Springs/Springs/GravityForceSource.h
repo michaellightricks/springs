@@ -9,9 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CPUVerletIntegrator : NSObject<Integrator>
-
-- (instancetype)initWithDamping:(float)damping;
+@interface GravityForceSource : NSObject
 
 @end
 

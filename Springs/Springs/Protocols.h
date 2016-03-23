@@ -19,5 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@protocol Collider <NSObject>
+
+- (void)collide:(SystemState *)state intermidiatePositions:(positionType *)positions;
+
+@end
+
 
 NS_ASSUME_NONNULL_END

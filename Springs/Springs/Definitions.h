@@ -6,7 +6,7 @@
 
 #import <simd/simd.h>
 
-typedef vector_float3 positionType;
+typedef vector_float4 positionType;
 typedef UInt16 indexType;
 
 typedef struct SpringElementType {

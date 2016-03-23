@@ -13,7 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PhysicalSystem : NSObject
 
-- (instancetype)initWithState:(SystemState *)state integrator:(id<Integrator>)integrator;
+- (instancetype)initWithState:(SystemState *)state integrator:(id<Integrator>)integrator
+                     collider:(id<Collider>)collider;
 
 - (void)addForcesSource:(id<ForceSource>)source;
 

@@ -19,8 +19,9 @@ constant float4 diffuse_color  = float4(0.4, 0.4, 1.0, 1.0);
 
 typedef struct
 {
-    float3 position [[attribute(0)]];
+    float4 position [[attribute(0)]];
     float3 normal [[attribute(1)]];
+    float2 texCoords [[attribute(2)]];
 } vertex_t;
 
 typedef struct {
@@ -30,12 +31,11 @@ typedef struct {
 
 // Vertex shader function
 vertex ColorInOut lighting_vertex(vertex_t vertex_array [[stage_in]],
-                                  constant uniforms_t& uniforms [[ buffer(1) ]])
+                                  constant uniforms_t& uniforms [[ buffer(2) ]])
 {
     ColorInOut out;
     
-    float4 in_position = float4(vertex_array.position, 1.0);
-    out.position = uniforms.modelview_projection_matrix * in_position;
+    out.position = uniforms.modelview_projection_matrix * vertex_array.position;
     
     float4 eye_normal = normalize(uniforms.normal_matrix * float4(vertex_array.normal, 0.0));
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
@@ -51,11 +51,10 @@ fragment half4 lighting_fragment(ColorInOut in [[stage_in]])
     return in.color;
 }
 
-kernel void kernel_function(device float3 *vertex_array [[ buffer(0) ]],
+kernel void kernel_function(device float4 *vertex_array [[ buffer(0) ]],
                             uint gid [[ thread_position_in_grid ]])
 {
   if (gid == 0) {
-    float3 v = vertex_array[gid];
     vertex_array[gid] = - 0.5;
   }
 }

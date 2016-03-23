@@ -22,14 +22,17 @@ typedef struct VertexType {
 }
 
 @property (nonatomic) float K;
+@property (strong, nonatomic) MTKMesh *mesh;
 
 @end
 
 BOOL hasSpring(Vertex& v, SpringElement& elem) {
   for (int i = 0; i < v.springs.size(); ++i) {
     SpringElement& vElem = v.springs[i];
-    if (vElem.idx1 == elem.idx1 &&
-        vElem.idx2 == elem.idx2) {
+    if ((vElem.idx1 == elem.idx1 &&
+        vElem.idx2 == elem.idx2) ||
+       (vElem.idx1 == elem.idx2 &&
+        vElem.idx2 == elem.idx1)) {
       return YES;
     }
   }
@@ -41,8 +44,8 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
 @implementation MTKMeshAdapter
 
 - (instancetype) initWithMesh:(MTKMesh *)mesh device:(id<MTLDevice>)device {
-
   if (self = [super init]) {
+    self.mesh = mesh;
     self.K = 100;
     vertices.resize(mesh.vertexCount);
     MTKSubmesh *submesh = mesh.submeshes[0];
@@ -51,7 +54,7 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
     
     self.trianglesBuffer = submesh.indexBuffer.buffer;
     self.springsBuffer = [self createSpringElementsBuffer:device];
-    self.positionsBuffer = mesh.vertexBuffers[0].buffer;
+    self.positionsBuffer = [self createPositionsBuffer:device];
     
     [self addSpringsFromTriangles:submesh];
     
@@ -66,9 +69,10 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
 }
 
 -(void)addSpringsFromTriangles:(MTKSubmesh *)submesh {
-  for (int i = 0; i < submesh.indexCount; ++i) {
-    indexType *ptr = (indexType *)[submesh.indexBuffer.buffer contents];
-    ptr = ptr + i;
+  Byte *tempPtr = (Byte *)submesh.indexBuffer.map.bytes;
+  indexType *ptr = (indexType *)(tempPtr + submesh.indexBuffer.offset);
+
+  for (int i = 0; i < submesh.indexCount / 3; ++i) {
     TriangleElement triangle;
     triangle.idx1 = *(ptr++);
     triangle.idx2 = *(ptr++);
@@ -100,6 +104,9 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
         size_t maxSize = MAX(v1.springs.size(), v2.springs.size());
         maxSpringsCount = MAX(maxSpringsCount, maxSize);
       }
+      else {
+        NSLog(@"sdfsdf");
+      }
     }
   }
   
@@ -112,17 +119,49 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
   elem.idx2 = idx2;
   elem.k = k;
   
-  positionType *ptr = (positionType *)[self.positionsBuffer contents];
-
-  positionType p1 = *(ptr + idx1);
+  positionType p1 = [self getPositionAtIndex:idx1];
   
-  positionType p2 = *(ptr + idx2);
+  positionType p2 = [self getPositionAtIndex:idx2];
   
   elem.restLength = simd::distance(p1, p2);
   
   return elem;
 }
 
+- (positionType)getPositionAtIndex:(indexType)idx {
+  MDLVertexAttribute *attr = [self.mesh.vertexDescriptor attributeNamed:MDLVertexAttributePosition];
+
+  NSUInteger stride = self.mesh.vertexDescriptor.layouts[attr.bufferIndex].stride;
+  MTKMeshBuffer *meshBuffer = self.mesh.vertexBuffers[attr.bufferIndex];
+ 
+  Byte *ptr = (Byte *)[meshBuffer.buffer contents];
+  ptr += meshBuffer.offset + stride * idx;
+  
+  positionType *posPtr = (positionType *)ptr;
+  return *posPtr;
+}
+
+- (id<MTLBuffer>)createPositionsBuffer:(id<MTLDevice>)device {
+  id<MTLBuffer> buffer = [device newBufferWithLength:sizeof(positionType) * self.mesh.vertexCount options:0];
+
+  MDLVertexAttribute *attr = [self.mesh.vertexDescriptor attributeNamed:MDLVertexAttributePosition];
+  
+  NSUInteger stride = self.mesh.vertexDescriptor.layouts[attr.bufferIndex].stride;
+  MTKMeshBuffer *meshBuffer = self.mesh.vertexBuffers[attr.bufferIndex];
+  
+  Byte *ptr = (Byte *)[meshBuffer.buffer contents] + meshBuffer.offset;
+  positionType *target = (positionType *)[buffer contents];
+  
+  NSUInteger idx = 0;
+  while (idx < self.mesh.vertexCount) {
+    positionType *source = (positionType *)(ptr + stride * idx++);
+    positionType pos = *source;
+    pos.w = 1;
+    *(target++) = pos;
+  }
+  
+  return buffer;
+}
 
 - (id<MTLBuffer>)createSpringElementsBuffer:(id<MTLDevice>)device {
   // springs buffer layout is vertices.size X (maxSpringsCount + 1) matrix
@@ -173,7 +212,6 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
   
   return buffer;
 }
-
 
 @end
 

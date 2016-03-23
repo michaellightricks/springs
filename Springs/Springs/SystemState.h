@@ -10,11 +10,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SystemState : NSObject
 
-- (instancetype)initWithPositions:(positionType *)points length:(NSUInteger)length
-                           device:(id<MTLDevice>)device;
-
-- (instancetype)initWithPositionsBuffer:(id<MTLBuffer>)buffer verticesCount:(NSUInteger)count
-                                 device:(id<MTLDevice>)device;
+- (instancetype)initWithPositions:(id<MTLBuffer>)positionsBuffer length:(NSUInteger)length
+                           offset:(NSUInteger)offset device:(id<MTLDevice>)device
+                      vertexCount:(NSUInteger)count;
 
 - (positionType)getPositionAtIndex:(NSUInteger)index;
 
@@ -28,9 +26,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)vertexPinned:(NSUInteger)index;
 
+- (void)rollPositions;
+
+- (void)zeroForces;
+
+@property (nonatomic) NSUInteger positionsOffset;
 @property (nonatomic) NSUInteger verticesCount;
 @property (strong, nonatomic) id<MTLBuffer> positions;
 @property (strong, nonatomic) id<MTLBuffer> prevPositions;
+@property (strong, nonatomic) id<MTLBuffer> tempPositions;
 @property (strong, nonatomic) id<MTLBuffer> forces;
 @property (strong, nonatomic) id<MTLBuffer> pinned;
 

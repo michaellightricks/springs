@@ -7,24 +7,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SystemState()
 
-//@property (nonatomic) NSRange modifiedRange;
-
 @end
 
 @implementation SystemState
 
-- (instancetype)initWithPositions:(vector_float3 *)points length:(NSUInteger)length
-                           device:(id<MTLDevice>)device {
+- (instancetype)initWithPositions:(id<MTLBuffer>)positionsBuffer length:(NSUInteger)length
+                           offset:(NSUInteger)offset device:(id<MTLDevice>)device
+                      vertexCount:(NSUInteger)count {
   if (self = [super init]) {
-    _verticesCount = length;
+    _verticesCount = count ;
+    self.positionsOffset = offset;
+    self.positions = positionsBuffer;
     
-    NSUInteger bufferLength = (sizeof(vector_float3) * _verticesCount);
+    void *ptr = [positionsBuffer contents];
     
-    self.positions = [device newBufferWithBytes:points length:bufferLength options:0];
     self.prevPositions =
-        [device newBufferWithBytes:points length:bufferLength options:0];
+        [device newBufferWithBytes:ptr length:length options:0];
+    self.tempPositions =
+        [device newBufferWithBytes:ptr length:length options:0];
     
-    self.forces = [device newBufferWithLength:bufferLength options:0];
+    self.forces = [device newBufferWithLength:sizeof(positionType) * _verticesCount  options:0];
     self.pinned = [device newBufferWithLength:(sizeof(BOOL) * _verticesCount) options:0];
   }
   
@@ -48,20 +50,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 }
 
-- (void)pinVertexAtIndex:(NSUInteger)index atPosition:(vector_float3)newPosition {
+- (void)pinVertexAtIndex:(NSUInteger)index atPosition:(positionType)newPosition {
   BOOL *buffer = (BOOL *)[self.pinned contents];
   
   buffer[index] = YES;
 
-  positionType *position = [self getPositionFrom:self.positions atIndex:index];
+  positionType *position = [self getPositionFrom:self.positions atIndex:index
+                                          offset:self.positionsOffset];
   *position = newPosition;
   
-  positionType *prevPosition = [self getPositionFrom:self.prevPositions atIndex:index];
+  positionType *prevPosition = [self getPositionFrom:self.prevPositions atIndex:index
+                                              offset:self.positionsOffset];
   *prevPosition = newPosition;
-  
-//  self.modifiedRange = NSMakeRange(MIN(self.modifiedRange.location, index),
-//                                   MAX(self.modifiedRange.length,
-//                                       ABS(self.modifiedRange.location - index)));
+}
+
+- (void)rollPositions {
+  id<MTLBuffer> temp = self.prevPositions;
+
+  self.prevPositions = self.positions;
+  self.positions = self.tempPositions;
+  self.tempPositions = temp;
+}
+
+- (void)zeroForces {
+  memset([self.forces contents], 0, sizeof(positionType) * self.verticesCount);
 }
 
 - (void)unpinVertexAtIndex:(NSUInteger)index {
@@ -75,20 +87,23 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (positionType)getPositionAtIndex:(NSUInteger)index {
-  return *[self getPositionFrom:self.positions atIndex:index];
+  return *[self getPositionFrom:self.positions atIndex:index offset:self.positionsOffset];
 }
 
 - (positionType)getPrevPositionAtIndex:(NSUInteger)index {
-  return *[self getPositionFrom:self.prevPositions atIndex:index];
+  return *[self getPositionFrom:self.prevPositions atIndex:index offset:self.positionsOffset];
 }
 
 - (positionType)getForceAtIndex:(NSUInteger)index {
-  return *[self getPositionFrom:self.forces atIndex:index];
+  return *[self getPositionFrom:self.forces atIndex:index offset:0];
 }
 
-- (positionType *)getPositionFrom:(id<MTLBuffer>)buffer atIndex:(NSUInteger)index {
-  positionType *ptr = (positionType *)[buffer contents];
-  return ptr + index;
+- (positionType *)getPositionFrom:(id<MTLBuffer>)buffer atIndex:(NSUInteger)index
+                           offset:(NSUInteger)offset{
+  void *ptr = [buffer contents];
+ 
+  positionType *posPtr = (positionType *) (ptr + offset);
+  return posPtr + index;
 }
 
 @end

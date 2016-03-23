@@ -63,6 +63,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
       [self _setupView];
       [self _loadAssets];
       [self _initPhysicalSystem];
+    [self _initPipelineDescriptor];
       [self _reshape];
   }
   else // Fallback to a blank UIView, an application could also fallback to OpenGL ES here.
@@ -105,22 +106,43 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 - (void)_loadAssets
 {
   // Generate meshes
-  MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){2,2,2} segments:(vector_uint3){1,1,1}
+//  MDLMesh *mdl = [MDLMesh newPlaneWithDimensions:(vector_float2){1, 1} segments:(vector_uint2){1, 1}
+//                                    geometryType:MDLGeometryTypeTriangles
+//                                       allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
+  
+  MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){1,1,1} segments:(vector_uint3){1,1,1}
                                   geometryType:MDLGeometryTypeTriangles inwardNormals:NO
                                      allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
   
   _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
   
+  MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
+  depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
+  depthStateDesc.depthWriteEnabled = YES;
+  _depthState = [_device newDepthStencilStateWithDescriptor:depthStateDesc];
+
+  id<MTLFunction> kernelFunction = [_defaultLibrary newFunctionWithName:@"kernel_function"];
+
+  NSError *error = NULL;
+
+  _computePipelineState = [_device newComputePipelineStateWithFunction:kernelFunction error:&error];
+}
+
+- (void)_initPipelineDescriptor {
+
   // Load the fragment program into the library
   id <MTLFunction> fragmentProgram = [_defaultLibrary newFunctionWithName:@"lighting_fragment"];
   
   // Load the vertex program into the library
   id <MTLFunction> vertexProgram = [_defaultLibrary newFunctionWithName:@"lighting_vertex"];
-  
+
   // Create a vertex descriptor from the MTKMesh
-  MTLVertexDescriptor *vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(_boxMesh.vertexDescriptor);
-  vertexDescriptor.layouts[0].stepRate = 1;
-  vertexDescriptor.layouts[0].stepFunction = MTLVertexStepFunctionPerVertex;
+//  MTLVertexDescriptor *vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(_boxMesh.vertexDescriptor);
+//
+//  vertexDescriptor.layouts[0].stepRate = 1;
+//  vertexDescriptor.layouts[0].stepFunction = MTLVertexStepFunctionPerVertex;
+  
+  MTLVertexDescriptor *vertexDescriptor = [self createDescriptor];
   
   // Create a reusable pipeline state
   MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -136,22 +158,57 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   NSError *error = NULL;
   _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
   if (!_pipelineState) {
-      NSLog(@"Failed to created pipeline state, error %@", error);
+    NSLog(@"Failed to created pipeline state, error %@", error);
   }
-  
-  MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
-  depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
-  depthStateDesc.depthWriteEnabled = YES;
-  _depthState = [_device newDepthStencilStateWithDescriptor:depthStateDesc];
-
-  id<MTLFunction> kernelFunction = [_defaultLibrary newFunctionWithName:@"kernel_function"];
-
-  _computePipelineState = [_device newComputePipelineStateWithFunction:kernelFunction error:&error];
 }
 
-//- (void)_renderCompute {
-//
-//}
+- (MTLVertexDescriptor *)createDescriptor {
+  MTLVertexDescriptor *result = [[MTLVertexDescriptor alloc] init];
+  
+  // layout we will have 2 separate buffers
+  // buffer for positions - dynamically updated each frame
+  // buffer for normals and texture coordinates - static
+  MTLVertexBufferLayoutDescriptor *posLayout = [[MTLVertexBufferLayoutDescriptor alloc] init];
+  posLayout.stride = sizeof(positionType);
+  posLayout.stepRate = 1;
+  posLayout.stepFunction = MTLVertexStepFunctionPerVertex;
+
+  [result.layouts setObject:posLayout atIndexedSubscript:0];
+  
+  MTLVertexBufferLayoutDescriptor *normalsLayout = [[MTLVertexBufferLayoutDescriptor alloc] init];
+  normalsLayout.stride = sizeof(float) * 6 + sizeof(vector_float2);
+  normalsLayout.stepRate = 1;
+  normalsLayout.stepFunction = MTLVertexStepFunctionPerVertex;
+  
+  [result.layouts setObject:normalsLayout atIndexedSubscript:1];
+
+  // positions
+  MTLVertexAttributeDescriptor *posAttrDesc = [[MTLVertexAttributeDescriptor alloc] init];
+  posAttrDesc.bufferIndex = 0;
+  posAttrDesc.offset = 0;
+  posAttrDesc.format = MTLVertexFormatFloat4;
+  
+  [result.attributes setObject:posAttrDesc  atIndexedSubscript:0];
+  
+  // normals
+  MTLVertexAttributeDescriptor *normalsAttrDesc = [[MTLVertexAttributeDescriptor alloc] init];
+  normalsAttrDesc.bufferIndex = 1;
+  normalsAttrDesc.offset = sizeof(float) * 3;
+  normalsAttrDesc.format = MTLVertexFormatFloat3;
+  
+  
+  [result.attributes setObject:normalsAttrDesc  atIndexedSubscript:1];
+  
+  // normals
+  MTLVertexAttributeDescriptor *texAttrDesc = [[MTLVertexAttributeDescriptor alloc] init];
+  texAttrDesc.bufferIndex = 1;
+  texAttrDesc.offset = sizeof(float) * 3;
+  texAttrDesc.format = MTLVertexFormatFloat2;
+  
+  [result.attributes setObject:texAttrDesc  atIndexedSubscript:2];
+  
+  return result;
+}
 
 - (void)_render
 {
@@ -184,8 +241,10 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
       // Set context state
       [renderEncoder pushDebugGroup:@"DrawCube"];
       [renderEncoder setRenderPipelineState:_pipelineState];
-      [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
-      [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:1 ];
+//      [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
+      [renderEncoder setVertexBuffer:_physicalSystem.state.positions offset:_physicalSystem.state.positionsOffset atIndex:0 ];
+      [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset atIndex:1 ];
+      [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:2 ];
       
       MTKSubmesh* submesh = _boxMesh.submeshes[0];
       // Tell the render context we want to draw our primitives
@@ -235,9 +294,10 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_update
 {
-  matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(_rotation, 0.0f, 1.0f, 0.0f));
+  matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f),
+                                               matrix_identity_float4x4);//matrix_from_rotation(_rotation, 1.0f, 0.0f, 1.0f));
   matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
-  matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
+  matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_identity_float4x4);//matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
   
   
   // Load constant buffer data into appropriate buffer at current index

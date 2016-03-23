@@ -16,13 +16,15 @@
 		6478F8A21C8C979C00AFB932 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6478F8A01C8C979C00AFB932 /* LaunchScreen.storyboard */; };
 		6478F8E61C9850D800AFB932 /* PhysicalSystem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8E51C9850D800AFB932 /* PhysicalSystem.mm */; };
 		6478F8EF1C99787400AFB932 /* SystemState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8EE1C99787400AFB932 /* SystemState.m */; };
-		6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.m */; };
+		6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.mm */; };
 		6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.mm */; };
 		6478F90E1C9AABB400AFB932 /* TriangleMeshAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F90D1C9AABB400AFB932 /* TriangleMeshAdapter.mm */; };
 		6478F9131C9AB4E700AFB932 /* PhysicalSystemReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9121C9AB4E700AFB932 /* PhysicalSystemReader.m */; };
 		6478F9161C9AB5BB00AFB932 /* DDFileReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9151C9AB5BB00AFB932 /* DDFileReader.m */; };
 		6478F9191C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9181C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m */; };
 		6478F91C1C9ADEFE00AFB932 /* MTKMeshAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F91B1C9ADEFE00AFB932 /* MTKMeshAdapter.mm */; };
+		6478F9941C9EFB2C00AFB932 /* GravityForceSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9931C9EFB2C00AFB932 /* GravityForceSource.m */; };
+		6478F99A1CA136A400AFB932 /* PlaneCollider.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9991CA136A400AFB932 /* PlaneCollider.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +45,7 @@
 		6478F8ED1C99787400AFB932 /* SystemState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemState.h; sourceTree = "<group>"; };
 		6478F8EE1C99787400AFB932 /* SystemState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SystemState.m; sourceTree = "<group>"; };
 		6478F8F01C997A7D00AFB932 /* CPUVerletIntegrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPUVerletIntegrator.h; sourceTree = "<group>"; };
-		6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPUVerletIntegrator.m; sourceTree = "<group>"; };
+		6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CPUVerletIntegrator.mm; sourceTree = "<group>"; };
 		6478F8F31C997ABA00AFB932 /* Protocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Protocols.h; sourceTree = "<group>"; };
 		6478F9081C99C89300AFB932 /* Definitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Definitions.h; sourceTree = "<group>"; };
 		6478F9091C99CE0000AFB932 /* CPUSpringForcesSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPUSpringForcesSource.h; sourceTree = "<group>"; };
@@ -59,6 +61,10 @@
 		6478F9181C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CPUSpringPhysicalSystem.m; path = ../CPUSpringPhysicalSystem.m; sourceTree = "<group>"; };
 		6478F91A1C9ADEFE00AFB932 /* MTKMeshAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTKMeshAdapter.h; sourceTree = "<group>"; };
 		6478F91B1C9ADEFE00AFB932 /* MTKMeshAdapter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MTKMeshAdapter.mm; sourceTree = "<group>"; };
+		6478F9921C9EFB2C00AFB932 /* GravityForceSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GravityForceSource.h; sourceTree = "<group>"; };
+		6478F9931C9EFB2C00AFB932 /* GravityForceSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GravityForceSource.m; sourceTree = "<group>"; };
+		6478F9981CA136A400AFB932 /* PlaneCollider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaneCollider.h; sourceTree = "<group>"; };
+		6478F9991CA136A400AFB932 /* PlaneCollider.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaneCollider.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,7 +113,7 @@
 				6478F8ED1C99787400AFB932 /* SystemState.h */,
 				6478F8EE1C99787400AFB932 /* SystemState.m */,
 				6478F8F01C997A7D00AFB932 /* CPUVerletIntegrator.h */,
-				6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.m */,
+				6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.mm */,
 				6478F8F31C997ABA00AFB932 /* Protocols.h */,
 				6478F9081C99C89300AFB932 /* Definitions.h */,
 				6478F9091C99CE0000AFB932 /* CPUSpringForcesSource.h */,
@@ -123,6 +129,10 @@
 				6478F9181C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m */,
 				6478F91A1C9ADEFE00AFB932 /* MTKMeshAdapter.h */,
 				6478F91B1C9ADEFE00AFB932 /* MTKMeshAdapter.mm */,
+				6478F9921C9EFB2C00AFB932 /* GravityForceSource.h */,
+				6478F9931C9EFB2C00AFB932 /* GravityForceSource.m */,
+				6478F9981CA136A400AFB932 /* PlaneCollider.h */,
+				6478F9991CA136A400AFB932 /* PlaneCollider.mm */,
 			);
 			path = Springs;
 			sourceTree = "<group>";
@@ -209,11 +219,13 @@
 				6478F9161C9AB5BB00AFB932 /* DDFileReader.m in Sources */,
 				6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.mm in Sources */,
 				6478F91C1C9ADEFE00AFB932 /* MTKMeshAdapter.mm in Sources */,
+				6478F9941C9EFB2C00AFB932 /* GravityForceSource.m in Sources */,
 				6478F90E1C9AABB400AFB932 /* TriangleMeshAdapter.mm in Sources */,
 				6478F9131C9AB4E700AFB932 /* PhysicalSystemReader.m in Sources */,
-				6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.m in Sources */,
+				6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.mm in Sources */,
 				6478F9191C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m in Sources */,
 				6478F8991C8C979C00AFB932 /* Shaders.metal in Sources */,
+				6478F99A1CA136A400AFB932 /* PlaneCollider.mm in Sources */,
 				6478F8E61C9850D800AFB932 /* PhysicalSystem.mm in Sources */,
 				6478F8941C8C979C00AFB932 /* AppDelegate.m in Sources */,
 				6478F8971C8C979C00AFB932 /* GameViewController.m in Sources */,

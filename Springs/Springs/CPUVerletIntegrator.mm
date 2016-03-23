@@ -7,7 +7,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CPUVerletIntegrator()
+@interface CPUVerletIntegrator() {
+  positionType _G;
+}
 
 @property (nonatomic) float D;
 
@@ -18,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDamping:(float)damping {
   if (self = [super init]) {
     self.D = damping;
+    _G = {0, -9.8, 0};
   }
   
   return self;
@@ -29,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
   for (int i = 0; i < state.verticesCount; ++i) {
     positionType pos = [state getPositionAtIndex:i];
     positionType prevPos = [state getPrevPositionAtIndex:i];
-    positionType force = [state getForceAtIndex:i];
+    positionType force = [state getForceAtIndex:i] + _G;
 
     newPosition[i] = (2 - self.D) * pos - (1 - self.D) * prevPos + squareDT * force;
   }
