@@ -46,19 +46,22 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
 - (instancetype) initWithMesh:(MTKMesh *)mesh device:(id<MTLDevice>)device {
   if (self = [super init]) {
     self.mesh = mesh;
-    self.K = 100;
-    vertices.resize(mesh.vertexCount);
+    self.K = 500;
+    vertices.resize(mesh.vertexCount + 1);
     MTKSubmesh *submesh = mesh.submeshes[0];
 
     assert(submesh.indexType == MTLIndexTypeUInt16);
-    
-    self.trianglesBuffer = submesh.indexBuffer.buffer;
-    self.springsBuffer = [self createSpringElementsBuffer:device];
+
     self.positionsBuffer = [self createPositionsBuffer:device];
     
     [self addSpringsFromTriangles:submesh];
+    [self addSpringsToCentroid:submesh];
+
+    _springsCount = springs.size();
+    _verticesCount = vertices.size();
     
-    _verticesCount = mesh.vertexCount;
+    self.trianglesBuffer = submesh.indexBuffer.buffer;
+    self.springsBuffer = [self createSpringElementsBuffer:device];
   }
   
   return self;
@@ -66,6 +69,14 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
 
 - (SpringElement *)springsPtr {
   return &springs.front();
+}
+
+- (void)addSpringsToCentroid:(MTKSubmesh *)submesh {
+  for (int i = 0; i < submesh.mesh.vertexCount; ++i) {
+    SpringElement element = [self getSpringElementFromIdx1:i idx2:(submesh.mesh.vertexCount)
+                                                         k:(self.K / 2.0)];
+    [self addSpring:element];
+  }
 }
 
 -(void)addSpringsFromTriangles:(MTKSubmesh *)submesh {
@@ -88,29 +99,31 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
     
     for (int elem = 0; elem < 3; ++elem) {
       SpringElement& spring = elements[elem];
-      Vertex& v1 = vertices[spring.idx1];
-      Vertex& v2 = vertices[spring.idx2];
-      
-      if (!hasSpring(v1, spring) && !hasSpring(v2, spring)) {
-        v1.springs.push_back(spring);
-        SpringElement opposite = spring;
-        uint idx = opposite.idx1;
-        opposite.idx1 = opposite.idx2;
-        opposite.idx2 = idx;
-        
-        v2.springs.push_back(opposite);
-        springs.push_back(spring);
-        
-        size_t maxSize = MAX(v1.springs.size(), v2.springs.size());
-        maxSpringsCount = MAX(maxSpringsCount, maxSize);
-      }
-      else {
-        NSLog(@"sdfsdf");
-      }
+      [self addSpring:spring];
     }
   }
+}
+
+- (void)addSpring:(SpringElement)spring {
+  Vertex& v1 = vertices[spring.idx1];
+  Vertex& v2 = vertices[spring.idx2];
   
-  _springsCount = springs.size();
+  if (!hasSpring(v1, spring) && !hasSpring(v2, spring)) {
+    v1.springs.push_back(spring);
+    SpringElement opposite = spring;
+    uint idx = opposite.idx1;
+    opposite.idx1 = opposite.idx2;
+    opposite.idx2 = idx;
+    
+    v2.springs.push_back(opposite);
+    springs.push_back(spring);
+    
+    size_t maxSize = MAX(v1.springs.size(), v2.springs.size());
+    maxSpringsCount = MAX(maxSpringsCount, maxSize);
+  }
+  else {
+    NSLog(@"sdfsdf");
+  }
 }
 
 - (SpringElement)getSpringElementFromIdx1:(uint)idx1 idx2:(uint)idx2 k:(float)k {
@@ -129,15 +142,9 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
 }
 
 - (positionType)getPositionAtIndex:(indexType)idx {
-  MDLVertexAttribute *attr = [self.mesh.vertexDescriptor attributeNamed:MDLVertexAttributePosition];
-
-  NSUInteger stride = self.mesh.vertexDescriptor.layouts[attr.bufferIndex].stride;
-  MTKMeshBuffer *meshBuffer = self.mesh.vertexBuffers[attr.bufferIndex];
- 
-  Byte *ptr = (Byte *)[meshBuffer.buffer contents];
-  ptr += meshBuffer.offset + stride * idx;
+  Byte *ptr = (Byte *)[self.positionsBuffer contents];
   
-  positionType *posPtr = (positionType *)ptr;
+  positionType *posPtr = (positionType *)(ptr + sizeof(positionType) * idx);
   return *posPtr;
 }
 
@@ -153,12 +160,21 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
   positionType *target = (positionType *)[buffer contents];
   
   NSUInteger idx = 0;
+  positionType centroid = {0.0, 0.0, 0.0, 0.0};
+  
   while (idx < self.mesh.vertexCount) {
     positionType *source = (positionType *)(ptr + stride * idx++);
     positionType pos = *source;
     pos.w = 1;
+    
+    centroid += pos;
+    
     *(target++) = pos;
   }
+  centroid = centroid / self.mesh.vertexCount;
+  centroid.w = 1;
+  
+  *target = centroid;
   
   return buffer;
 }

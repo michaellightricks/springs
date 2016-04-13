@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[CPUSpringForcesSource addForces:to:]:CPUSpringForcesSource.mm">
+         <PersistentStrings>
+            <PersistentString
+               value = "distance - element.restLength">
+            </PersistentString>
+            <PersistentString
+               value = "(pos2 - pos1)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[CPUVerletIntegrator integrateState:timeStep:to:]:CPUVerletIntegrator.mm">
+         <PersistentStrings>
+            <PersistentString
+               value = "[state getForceAtIndex:i]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

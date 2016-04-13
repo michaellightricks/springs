@@ -26,9 +26,9 @@ NS_ASSUME_NONNULL_BEGIN
   SystemState *state = [[SystemState alloc] initWithPositions:adapter.positionsBuffer
                                                        length:mesh.vertexBuffers[0].length
                                                        offset:mesh.vertexBuffers[0].offset
-                                                       device:device vertexCount:mesh.vertexCount];
+                                                       device:device vertexCount:adapter.verticesCount];
 
-  CPUVerletIntegrator *integrator = [[CPUVerletIntegrator alloc] initWithDamping:0.5];
+  CPUVerletIntegrator *integrator = [[CPUVerletIntegrator alloc] initWithDamping:0.3];
   positionType origin;
   origin.x = origin.y = origin.z = 0.0;
   origin.w = 1.0;

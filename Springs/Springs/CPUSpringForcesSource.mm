@@ -37,12 +37,14 @@ NS_ASSUME_NONNULL_BEGIN
     
     float distance = simd::distance(pos1, pos2);
     
-    positionType force = (pos2 - pos1) * (1 - element.restLength / distance) * element.k;
-    
-    float sqLength = force.x * force.x + force.y * force.y + force.z * force.z;
-    if (sqLength > THRESHOLD) {
-      forces[element.idx1] += force;
-      forces[element.idx2] -= force;
+    if (fabs(distance - element.restLength) > THRESHOLD) {
+      positionType force = (pos2 - pos1) * (1 - element.restLength/distance) * element.k;
+      
+      //float sqLength = force.x * force.x + force.y * force.y + force.z * force.z;
+      //if (sqLength > THRESHOLD) {
+        forces[element.idx1] += force;
+        forces[element.idx2] -= force;
+      //}
     }
   }
 }

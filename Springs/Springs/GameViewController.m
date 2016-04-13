@@ -8,6 +8,8 @@
 
 #import "GameViewController.h"
 #import "SharedStructures.h"
+#import <GLKit/GLKit.h>
+
 
 #import "CPUSpringPhysicalSystem.h"
 
@@ -71,6 +73,9 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
       NSLog(@"Metal is not supported on this device");
       self.view = [[UIView alloc] initWithFrame:self.view.frame];
   }
+  
+  UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(onPan:)];
+  [self.view addGestureRecognizer:panRecognizer];
 }
 
 - (void)_setupView
@@ -110,9 +115,15 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 //                                    geometryType:MDLGeometryTypeTriangles
 //                                       allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
   
-  MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){1,1,1} segments:(vector_uint3){1,1,1}
-                                  geometryType:MDLGeometryTypeTriangles inwardNormals:NO
-                                     allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
+//  MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){1,1,1} segments:(vector_uint3){1,1,1}
+//                                  geometryType:MDLGeometryTypeTriangles inwardNormals:NO
+//                                     allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
+  
+  MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){0.5, 0.5, 0.5} radialSegments:10 verticalSegments:10
+                                   geometryType:MDLGeometryTypeTriangles inwardNormals:NO
+                                     hemisphere:NO
+                                      allocator:[[MTKMeshBufferAllocator alloc]
+                                                 initWithDevice: _device]];
   
   _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
   
@@ -295,7 +306,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 - (void)_update
 {
   matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f),
-                                               matrix_identity_float4x4);//matrix_from_rotation(_rotation, 1.0f, 0.0f, 1.0f));
+                                               matrix_from_rotation(_rotation, 0.0f, 1.0f, 0.0f));
   matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
   matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_identity_float4x4);//matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
   
@@ -305,7 +316,28 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
   uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
   uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);    
-  _rotation += 0.01f;
+ 
+}
+
+- (GLKQuaternion) rotateQuaternionWithVector:(CGPoint)delta
+{
+  GLKQuaternion quarternion =  GLKQuaternionMake(0.f, 0.f, 0.f, 1.f);
+  GLKVector3 up = GLKVector3Make(0.f, 1.f, 0.f);
+  GLKVector3 right = GLKVector3Make(-1.f, 0.f, 0.f);
+  
+  up = GLKQuaternionRotateVector3( GLKQuaternionInvert(quarternion), up );
+  quarternion = GLKQuaternionMultiply(quarternion, GLKQuaternionMakeWithAngleAndVector3Axis(delta.x * 3.14f, up));
+  
+  right = GLKQuaternionRotateVector3( GLKQuaternionInvert(quarternion), right );
+  quarternion = GLKQuaternionMultiply(quarternion, GLKQuaternionMakeWithAngleAndVector3Axis(delta.y * 3.14f, right));
+  
+  return quarternion;
+}
+
+-(void)onPan:(UIGestureRecognizer*)gestureRecognizer {
+  UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)gestureRecognizer;
+  CGPoint p = [pan translationInView:self.view];
+  _rotation = p.x * 3.14 / 200.0;
 }
 
 // Called whenever view changes orientation or layout is changed
