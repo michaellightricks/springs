@@ -64,10 +64,11 @@ typedef struct PlaneType {
 }
 
 - (positionType)intersectPlane:(Plane)plane segmentStart:(positionType)start end:(positionType)end {
+  positionType projectionOnPlane = simd::dot(end - plane.origin, plane.normal) * plane.normal;
   positionType v = end - start;
-  float t = - (simd::dot(start, plane.normal) + plane.d) / simd::dot(plane.origin, v);
-  
-  return start + t * v;
+  float vLength = simd::length(v);
+  float t = simd::dot(v / vLength, projectionOnPlane);
+  return end + t * plane.normal;
 }
 
 @end
