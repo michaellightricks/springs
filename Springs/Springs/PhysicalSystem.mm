@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
   if (self = [super init]) {
     _integrator = integrator;
     _collider = collider;
-    _dT = 0.03;
+    _dT = 0.01;
     _dTSQ = _dT * _dT;
     
     self.state = state;

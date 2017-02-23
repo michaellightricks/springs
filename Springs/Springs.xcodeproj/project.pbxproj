@@ -24,6 +24,8 @@
 		6478F9191C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9181C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.m */; };
 		6478F91C1C9ADEFE00AFB932 /* MTKMeshAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F91B1C9ADEFE00AFB932 /* MTKMeshAdapter.mm */; };
 		6478F99A1CA136A400AFB932 /* PlaneCollider.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9991CA136A400AFB932 /* PlaneCollider.mm */; };
+		649145F61E5C465A00CDC48A /* SceneKit Scene.scn in Resources */ = {isa = PBXBuildFile; fileRef = 649145F51E5C465A00CDC48A /* SceneKit Scene.scn */; };
+		6491491C1E5CA1D300CDC48A /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6491491B1E5CA1D300CDC48A /* CoreMotion.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +64,8 @@
 		6478F91B1C9ADEFE00AFB932 /* MTKMeshAdapter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MTKMeshAdapter.mm; sourceTree = "<group>"; };
 		6478F9981CA136A400AFB932 /* PlaneCollider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaneCollider.h; sourceTree = "<group>"; };
 		6478F9991CA136A400AFB932 /* PlaneCollider.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaneCollider.mm; sourceTree = "<group>"; };
+		649145F51E5C465A00CDC48A /* SceneKit Scene.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "SceneKit Scene.scn"; sourceTree = "<group>"; };
+		6491491B1E5CA1D300CDC48A /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6491491C1E5CA1D300CDC48A /* CoreMotion.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +87,7 @@
 				6478F9151C9AB5BB00AFB932 /* DDFileReader.m */,
 				6478F88E1C8C979C00AFB932 /* Springs */,
 				6478F88D1C8C979C00AFB932 /* Products */,
+				6491491A1E5CA1D300CDC48A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,6 +117,7 @@
 				6478F8EE1C99787400AFB932 /* SystemState.m */,
 				6478F8F01C997A7D00AFB932 /* CPUVerletIntegrator.h */,
 				6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.mm */,
+				649145F51E5C465A00CDC48A /* SceneKit Scene.scn */,
 				6478F8F31C997ABA00AFB932 /* Protocols.h */,
 				6478F9081C99C89300AFB932 /* Definitions.h */,
 				6478F9091C99CE0000AFB932 /* CPUSpringForcesSource.h */,
@@ -138,6 +145,14 @@
 				6478F8901C8C979C00AFB932 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6491491A1E5CA1D300CDC48A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6491491B1E5CA1D300CDC48A /* CoreMotion.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +214,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				649145F61E5C465A00CDC48A /* SceneKit Scene.scn in Resources */,
 				6478F8A21C8C979C00AFB932 /* LaunchScreen.storyboard in Resources */,
 				6478F89F1C8C979C00AFB932 /* Assets.xcassets in Resources */,
 				6478F89D1C8C979C00AFB932 /* Main.storyboard in Resources */,

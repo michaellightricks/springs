@@ -9,6 +9,8 @@
 #import "GameViewController.h"
 #import "SharedStructures.h"
 #import <GLKit/GLKit.h>
+#import <SceneKit/SceneKit.h>
+#import <SceneKit/ModelIO.h>
 
 
 #import "CPUSpringPhysicalSystem.h"
@@ -114,27 +116,35 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 //  MDLMesh *mdl = [MDLMesh newPlaneWithDimensions:(vector_float2){1, 1} segments:(vector_uint2){1, 1}
 //                                    geometryType:MDLGeometryTypeTriangles
 //                                       allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
-  
+//  MDLMesh *mdl = [[MDLMesh alloc] initPlaneWithExtent:(vector_float3){1, 1, 1}
+//                                             segments:(vector_uint2){1, 1}
+//                                         geometryType:MDLGeometryTypeTriangles
+//                                            allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
+
 //  MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){1,1,1} segments:(vector_uint3){1,1,1}
 //                                  geometryType:MDLGeometryTypeTriangles inwardNormals:NO
 //                                     allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
-  
-  MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){0.5, 0.5, 0.5} radialSegments:10 verticalSegments:10
-                                   geometryType:MDLGeometryTypeTriangles inwardNormals:NO
-                                     hemisphere:NO
-                                      allocator:[[MTKMeshBufferAllocator alloc]
-                                                 initWithDevice: _device]];
-  
-  _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
-  
+
+
+//  MDLMesh *mdl= [MDLMesh meshWithSCNGeometry:[SCNSphere sphereWithRadius:0.5]
+//                             bufferAllocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
+//  MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){0.5, 0.5, 0.5} radialSegments:10 verticalSegments:10
+//                                   geometryType:MDLGeometryTypeTriangles inwardNormals:NO
+//                                     hemisphere:NO
+//                                      allocator:[[MTKMeshBufferAllocator alloc]
+//                                                 initWithDevice: _device]];
+  MDLMesh *mdl = [MDLMesh newIcosahedronWithRadius:0.5 inwardNormals:NO
+                                         allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
+
+  NSError *error;
+  _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:&error];
+
   MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
   depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
   depthStateDesc.depthWriteEnabled = YES;
   _depthState = [_device newDepthStencilStateWithDescriptor:depthStateDesc];
 
   id<MTLFunction> kernelFunction = [_defaultLibrary newFunctionWithName:@"kernel_function"];
-
-  NSError *error = NULL;
 
   _computePipelineState = [_device newComputePipelineStateWithFunction:kernelFunction error:&error];
 }

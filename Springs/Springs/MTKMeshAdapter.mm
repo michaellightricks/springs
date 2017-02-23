@@ -74,7 +74,7 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
 - (void)addSpringsToCentroid:(MTKSubmesh *)submesh {
   for (int i = 0; i < submesh.mesh.vertexCount; ++i) {
     SpringElement element = [self getSpringElementFromIdx1:i idx2:(submesh.mesh.vertexCount)
-                                                         k:(self.K * 3)];
+                                                         k:(self.K * 2)];
     [self addSpring:element];
   }
 }

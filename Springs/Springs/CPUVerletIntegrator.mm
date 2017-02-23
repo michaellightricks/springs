@@ -5,6 +5,8 @@
 #import "CPUVerletIntegrator.h"
 #import "Definitions.h"
 
+#import <CoreMotion/CoreMotion.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CPUVerletIntegrator() {
@@ -12,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 @property (nonatomic) float D;
+@property (strong, nonatomic) CMMotionManager *motionManager;
 
 @end
 
@@ -20,7 +23,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDamping:(float)damping {
   if (self = [super init]) {
     self.D = damping;
-    _G = {0, -9.8, 0, 0};
+    _motionManager = [[CMMotionManager alloc] init];
+    self.motionManager.accelerometerUpdateInterval = 0.1;
+    [self.motionManager
+      startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue]
+      withHandler:^(CMAccelerometerData * _Nullable accelerometerData,
+                                         NSError * _Nullable error) {
+        self->_G.x = 9.8 * accelerometerData.acceleration.x;
+        self->_G.y = 9.8 * accelerometerData.acceleration.y;
+        self->_G.z = -9.8 * accelerometerData.acceleration.z;
+    }];
   }
   
   return self;
@@ -31,6 +43,11 @@ NS_ASSUME_NONNULL_BEGIN
   
   float sqLengthMax = 0;
   for (int i = 0; i < state.verticesCount; ++i) {
+    //if ([state vertexPinned:i]) {
+    if (i == 0) {
+      continue;
+    }
+
     positionType pos = [state getPositionAtIndex:i];
     positionType prevPos = [state getPrevPositionAtIndex:i];
     positionType force = [state getForceAtIndex:i] + _G;
