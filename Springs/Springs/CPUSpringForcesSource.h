@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CPUSpringForcesSource : NSObject<ForceSource>
 
-- (instancetype)initWithElements:(SpringElement *)elements count:(NSUInteger)count;
+- (instancetype)initWithElements:(const SpringElement *)elements count:(NSUInteger)count;
 
 @end
 

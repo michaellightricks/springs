@@ -12,13 +12,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface CPUSpringForcesSource()
 
 @property (nonatomic) NSUInteger elementsCount;
-@property (nonatomic) SpringElement *elements;
+@property (nonatomic) const SpringElement *elements;
 
 @end
 
 @implementation CPUSpringForcesSource
 
-- (instancetype)initWithElements:(SpringElement *)elements count:(NSUInteger)count {
+- (instancetype)initWithElements:(const SpringElement *)elements count:(NSUInteger)count {
   if (self = [super init]) {
     self.elements = elements;
     self.elementsCount = count;

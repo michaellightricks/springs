@@ -67,7 +67,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
       [self _setupView];
       [self _loadAssets];
       [self _initPhysicalSystem];
-    [self _initPipelineDescriptor];
+      [self _initPipelineDescriptor];
       [self _reshape];
   }
   else // Fallback to a blank UIView, an application could also fallback to OpenGL ES here.
@@ -107,32 +107,21 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 }
 
 - (void)_initPhysicalSystem {
-  _physicalSystem = [[CPUSpringPhysicalSystem alloc] initWithDevice:_device mesh:_boxMesh];
+  MTKMeshAdapter *adapter = [[MTKMeshAdapter alloc] initWithMesh:mesh device:device];
+
+  SystemState *state = [[SystemState alloc] initWithPositions:adapter.positionsBuffer
+                                                       length:mesh.vertexBuffers[0].length
+                                                       offset:mesh.vertexBuffers[0].offset
+                                                       device:device
+                                                  vertexCount:adapter.verticesCount];
+
+  _physicalSystem = [[CPUSpringPhysicalSystem alloc] initWithState:state
+                                                           springs:adapter.springs];
 }
 
 - (void)_loadAssets
 {
   // Generate meshes
-//  MDLMesh *mdl = [MDLMesh newPlaneWithDimensions:(vector_float2){1, 1} segments:(vector_uint2){1, 1}
-//                                    geometryType:MDLGeometryTypeTriangles
-//                                       allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
-//  MDLMesh *mdl = [[MDLMesh alloc] initPlaneWithExtent:(vector_float3){1, 1, 1}
-//                                             segments:(vector_uint2){1, 1}
-//                                         geometryType:MDLGeometryTypeTriangles
-//                                            allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
-
-//  MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){1,1,1} segments:(vector_uint3){1,1,1}
-//                                  geometryType:MDLGeometryTypeTriangles inwardNormals:NO
-//                                     allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
-
-
-//  MDLMesh *mdl= [MDLMesh meshWithSCNGeometry:[SCNSphere sphereWithRadius:0.5]
-//                             bufferAllocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
-//  MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){0.5, 0.5, 0.5} radialSegments:10 verticalSegments:10
-//                                   geometryType:MDLGeometryTypeTriangles inwardNormals:NO
-//                                     hemisphere:NO
-//                                      allocator:[[MTKMeshBufferAllocator alloc]
-//                                                 initWithDevice: _device]];
   MDLMesh *mdl = [MDLMesh newIcosahedronWithRadius:0.5 inwardNormals:NO
                                          allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
 
@@ -157,12 +146,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   // Load the vertex program into the library
   id <MTLFunction> vertexProgram = [_defaultLibrary newFunctionWithName:@"lighting_vertex"];
 
-  // Create a vertex descriptor from the MTKMesh
-//  MTLVertexDescriptor *vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(_boxMesh.vertexDescriptor);
-//
-//  vertexDescriptor.layouts[0].stepRate = 1;
-//  vertexDescriptor.layouts[0].stepFunction = MTLVertexStepFunctionPerVertex;
-  
   MTLVertexDescriptor *vertexDescriptor = [self createDescriptor];
   
   // Create a reusable pipeline state
@@ -177,7 +160,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   pipelineStateDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
   
   NSError *error = NULL;
-  _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
+  _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                           error:&error];
   if (!_pipelineState) {
     NSLog(@"Failed to created pipeline state, error %@", error);
   }
@@ -220,14 +204,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   
   [result.attributes setObject:normalsAttrDesc  atIndexedSubscript:1];
   
-  // normals
-  MTLVertexAttributeDescriptor *texAttrDesc = [[MTLVertexAttributeDescriptor alloc] init];
-  texAttrDesc.bufferIndex = 1;
-  texAttrDesc.offset = sizeof(float) * 3;
-  texAttrDesc.format = MTLVertexFormatFloat2;
-  
-  [result.attributes setObject:texAttrDesc  atIndexedSubscript:2];
-  
   return result;
 }
 
@@ -255,21 +231,26 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   if(renderPassDescriptor != nil) // If we have a valid drawable, begin the commands to render into it
   {
       // Create a render command encoder so we can render into something
-      id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+      id <MTLRenderCommandEncoder> renderEncoder =
+          [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
       renderEncoder.label = @"MyRenderEncoder";
       [renderEncoder setDepthStencilState:_depthState];
       
       // Set context state
       [renderEncoder pushDebugGroup:@"DrawCube"];
       [renderEncoder setRenderPipelineState:_pipelineState];
-//      [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
-      [renderEncoder setVertexBuffer:_physicalSystem.state.positions offset:_physicalSystem.state.positionsOffset atIndex:0 ];
-      [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset atIndex:1 ];
-      [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:2 ];
+      [renderEncoder setVertexBuffer:_physicalSystem.state.positions
+                              offset:_physicalSystem.state.positionsOffset atIndex:0 ];
+      [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer
+                              offset:_boxMesh.vertexBuffers[0].offset atIndex:1 ];
+      [renderEncoder setVertexBuffer:_dynamicConstantBuffer
+                              offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:2 ];
       
       MTKSubmesh* submesh = _boxMesh.submeshes[0];
       // Tell the render context we want to draw our primitives
-      [renderEncoder drawIndexedPrimitives:submesh.primitiveType indexCount:submesh.indexCount indexType:submesh.indexType indexBuffer:submesh.indexBuffer.buffer indexBufferOffset:submesh.indexBuffer.offset];
+      [renderEncoder drawIndexedPrimitives:submesh.primitiveType indexCount:submesh.indexCount
+                                 indexType:submesh.indexType indexBuffer:submesh.indexBuffer.buffer
+                         indexBufferOffset:submesh.indexBuffer.offset];
 
       [renderEncoder popDebugGroup];
       
@@ -290,18 +271,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 - (void)_compute
 {
   [_physicalSystem integrateTimeStep];
-//  id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-//  id<MTLComputeCommandEncoder> commandEncoder = [commandBuffer computeCommandEncoder];
-// 
-//  [commandEncoder setComputePipelineState:_computePipelineState];
-//  [commandEncoder setBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset
-//                    atIndex:0];
-// 
-//  [commandEncoder dispatchThreadgroups:MTLSizeMake(1, 1, 1)
-//                 threadsPerThreadgroup:MTLSizeMake(_boxMesh.vertexCount, 1, 1)];
-//  [commandEncoder endEncoding];
-//  
-//  [commandBuffer commit];
 }
 
 - (void)_reshape

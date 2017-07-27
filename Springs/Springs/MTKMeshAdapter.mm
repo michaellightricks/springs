@@ -79,7 +79,7 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
   }
 }
 
--(void)addSpringsFromTriangles:(MTKSubmesh *)submesh {
+- (void)addSpringsFromTriangles:(MTKSubmesh *)submesh {
   Byte *tempPtr = (Byte *)submesh.indexBuffer.map.bytes;
   indexType *ptr = (indexType *)(tempPtr + submesh.indexBuffer.offset);
 

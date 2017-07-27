@@ -3,13 +3,16 @@
 
 #import <Foundation/Foundation.h>
 
+#import <vector>
+
 #import "PhysicalSystem.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CPUSpringPhysicalSystem : PhysicalSystem
 
-- (instancetype)initWithDevice:(id<MTLDevice>)device mesh:(MTKMesh *)mesh;
+- (instancetype)initWithState:(SystemState *)state
+                      springs:(const std::vector<SpringElement> &)springs;
 
 @property (readonly, nonatomic) MTKMesh *mesh;
 

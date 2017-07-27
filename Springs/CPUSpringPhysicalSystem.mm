@@ -5,29 +5,15 @@
 
 #import "CPUSpringForcesSource.h"
 #import "CPUVerletIntegrator.h"
-#import "TriangleMeshAdapter.h"
 #import "MTKMeshAdapter.h"
 #import "PlaneCollider.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-@interface CPUSpringPhysicalSystem()
-
-@property (strong, nonatomic) MTKMeshAdapter *adapter;
-
-@end
-
 @implementation CPUSpringPhysicalSystem
 
-- (instancetype)initWithDevice:(id<MTLDevice>)device mesh:(MTKMesh *)mesh{
-  MTKMeshAdapter *adapter = [[MTKMeshAdapter alloc] initWithMesh:mesh device:device];
-  
-  SystemState *state = [[SystemState alloc] initWithPositions:adapter.positionsBuffer
-                                                       length:mesh.vertexBuffers[0].length
-                                                       offset:mesh.vertexBuffers[0].offset
-                                                       device:device vertexCount:adapter.verticesCount];
-
+- (instancetype)initWithState:(SystemState *)state
+                      springs:(const std::vector<SpringElement> &)springs {
   CPUVerletIntegrator *integrator = [[CPUVerletIntegrator alloc] initWithDamping:0.15];
   positionType origin;
   origin.x = origin.y = origin.z = 0.0;
@@ -41,11 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
                                                           dimensions:dim];
 
   if (self = [super initWithState:state integrator:integrator collider:collider]) {
-    self.adapter = adapter;
-    SpringElement *springs = [self.adapter springsPtr];
-    
     CPUSpringForcesSource *forcesSource =
-    [[CPUSpringForcesSource alloc] initWithElements:springs count:self.adapter.springsCount];
+        [[CPUSpringForcesSource alloc] initWithElements:&springs.front() count:springs.size()];
 
     [self addForcesSource:forcesSource];
   }
