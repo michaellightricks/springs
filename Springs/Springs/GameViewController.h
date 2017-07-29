@@ -6,9 +6,9 @@
 //  Copyright © 2016 Michael Kupchick. All rights reserved.
 //
 
-@import UIKit;
-@import Metal;
-@import MetalKit;
+#import <UIKit/UIKit.h>
+#import <Metal/Metal.h>
+#import <MetalKit/MetalKit.h>
 
 @interface GameViewController : UIViewController<MTKViewDelegate>
 

@@ -6,10 +6,14 @@
 #import <MetalKit/MetalKit.h>
 #import <ModelIO/ModelIO.h>
 #import "Definitions.h"
+#import <vector>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MTKMeshAdapter : NSObject
+@interface MTKMeshAdapter : NSObject {
+@public
+  std::vector<SpringElement> springs;
+}
 
 - (instancetype)initWithMesh:(MTKMesh *)mesh device:(id<MTLDevice>)device;
 

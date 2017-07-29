@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TetgenFileReader : NSObject
 
-- (MTKMesh *)meshFromFiles:(NSString *)fileNamePatter;
+- (MTKMesh *)meshFromFiles:(NSString *)fileNamePattern device:(id<MTLDevice>)device;
 
 @end
 

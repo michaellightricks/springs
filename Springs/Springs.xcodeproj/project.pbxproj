@@ -7,10 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6422F6171F29FB30003BA368 /* TetgenFileReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6422F6161F29FB30003BA368 /* TetgenFileReader.m */; };
+		6422F6171F29FB30003BA368 /* TetgenFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6422F6161F29FB30003BA368 /* TetgenFileReader.mm */; };
+		6442BD781F2BD32C00670360 /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6442BD771F2BD32C00670360 /* ModelIO.framework */; };
+		6442BD7B1F2BD33600670360 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6442BD791F2BD33600670360 /* Metal.framework */; };
+		6442BD7C1F2BD33600670360 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6442BD7A1F2BD33600670360 /* MetalKit.framework */; };
+		6442BD821F2BD66B00670360 /* bunny.1.edge in Resources */ = {isa = PBXBuildFile; fileRef = 6442BD7D1F2BD66B00670360 /* bunny.1.edge */; };
+		6442BD831F2BD66B00670360 /* bunny.1.ele in Resources */ = {isa = PBXBuildFile; fileRef = 6442BD7E1F2BD66B00670360 /* bunny.1.ele */; };
+		6442BD841F2BD66B00670360 /* bunny.1.face in Resources */ = {isa = PBXBuildFile; fileRef = 6442BD7F1F2BD66B00670360 /* bunny.1.face */; };
+		6442BD851F2BD66B00670360 /* bunny.1.node in Resources */ = {isa = PBXBuildFile; fileRef = 6442BD801F2BD66B00670360 /* bunny.1.node */; };
+		6442BD861F2BD66B00670360 /* bunny.1.smesh in Resources */ = {isa = PBXBuildFile; fileRef = 6442BD811F2BD66B00670360 /* bunny.1.smesh */; };
 		6478F8911C8C979C00AFB932 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8901C8C979C00AFB932 /* main.m */; };
 		6478F8941C8C979C00AFB932 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8931C8C979C00AFB932 /* AppDelegate.m */; };
-		6478F8971C8C979C00AFB932 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8961C8C979C00AFB932 /* GameViewController.m */; };
+		6478F8971C8C979C00AFB932 /* GameViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8961C8C979C00AFB932 /* GameViewController.mm */; };
 		6478F8991C8C979C00AFB932 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8981C8C979C00AFB932 /* Shaders.metal */; };
 		6478F89D1C8C979C00AFB932 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6478F89B1C8C979C00AFB932 /* Main.storyboard */; };
 		6478F89F1C8C979C00AFB932 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6478F89E1C8C979C00AFB932 /* Assets.xcassets */; };
@@ -29,13 +37,21 @@
 
 /* Begin PBXFileReference section */
 		6422F6151F29FB30003BA368 /* TetgenFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TetgenFileReader.h; sourceTree = "<group>"; };
-		6422F6161F29FB30003BA368 /* TetgenFileReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TetgenFileReader.m; sourceTree = "<group>"; };
+		6422F6161F29FB30003BA368 /* TetgenFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TetgenFileReader.mm; sourceTree = "<group>"; };
+		6442BD771F2BD32C00670360 /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = System/Library/Frameworks/ModelIO.framework; sourceTree = SDKROOT; };
+		6442BD791F2BD33600670360 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		6442BD7A1F2BD33600670360 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
+		6442BD7D1F2BD66B00670360 /* bunny.1.edge */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.1.edge; sourceTree = SOURCE_ROOT; };
+		6442BD7E1F2BD66B00670360 /* bunny.1.ele */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.1.ele; sourceTree = SOURCE_ROOT; };
+		6442BD7F1F2BD66B00670360 /* bunny.1.face */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.1.face; sourceTree = SOURCE_ROOT; };
+		6442BD801F2BD66B00670360 /* bunny.1.node */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.1.node; sourceTree = SOURCE_ROOT; };
+		6442BD811F2BD66B00670360 /* bunny.1.smesh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.1.smesh; sourceTree = SOURCE_ROOT; };
 		6478F88C1C8C979C00AFB932 /* Springs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Springs.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6478F8901C8C979C00AFB932 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6478F8921C8C979C00AFB932 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6478F8931C8C979C00AFB932 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		6478F8951C8C979C00AFB932 /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
-		6478F8961C8C979C00AFB932 /* GameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
+		6478F8961C8C979C00AFB932 /* GameViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GameViewController.mm; sourceTree = "<group>"; };
 		6478F8981C8C979C00AFB932 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		6478F89A1C8C979C00AFB932 /* SharedStructures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedStructures.h; sourceTree = "<group>"; };
 		6478F89C1C8C979C00AFB932 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -70,6 +86,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6442BD7B1F2BD33600670360 /* Metal.framework in Frameworks */,
+				6442BD7C1F2BD33600670360 /* MetalKit.framework in Frameworks */,
+				6442BD781F2BD32C00670360 /* ModelIO.framework in Frameworks */,
 				6491491C1E5CA1D300CDC48A /* CoreMotion.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,10 +118,15 @@
 		6478F88E1C8C979C00AFB932 /* Springs */ = {
 			isa = PBXGroup;
 			children = (
+				6442BD7D1F2BD66B00670360 /* bunny.1.edge */,
+				6442BD7E1F2BD66B00670360 /* bunny.1.ele */,
+				6442BD7F1F2BD66B00670360 /* bunny.1.face */,
+				6442BD801F2BD66B00670360 /* bunny.1.node */,
+				6442BD811F2BD66B00670360 /* bunny.1.smesh */,
 				6478F8921C8C979C00AFB932 /* AppDelegate.h */,
 				6478F8931C8C979C00AFB932 /* AppDelegate.m */,
 				6478F8951C8C979C00AFB932 /* GameViewController.h */,
-				6478F8961C8C979C00AFB932 /* GameViewController.m */,
+				6478F8961C8C979C00AFB932 /* GameViewController.mm */,
 				6478F8981C8C979C00AFB932 /* Shaders.metal */,
 				6478F89A1C8C979C00AFB932 /* SharedStructures.h */,
 				6478F89B1C8C979C00AFB932 /* Main.storyboard */,
@@ -129,7 +153,7 @@
 				6478F9981CA136A400AFB932 /* PlaneCollider.h */,
 				6478F9991CA136A400AFB932 /* PlaneCollider.mm */,
 				6422F6151F29FB30003BA368 /* TetgenFileReader.h */,
-				6422F6161F29FB30003BA368 /* TetgenFileReader.m */,
+				6422F6161F29FB30003BA368 /* TetgenFileReader.mm */,
 			);
 			path = Springs;
 			sourceTree = "<group>";
@@ -145,6 +169,9 @@
 		6491491A1E5CA1D300CDC48A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6442BD791F2BD33600670360 /* Metal.framework */,
+				6442BD7A1F2BD33600670360 /* MetalKit.framework */,
+				6442BD771F2BD32C00670360 /* ModelIO.framework */,
 				6491491B1E5CA1D300CDC48A /* CoreMotion.framework */,
 			);
 			name = Frameworks;
@@ -209,10 +236,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6442BD831F2BD66B00670360 /* bunny.1.ele in Resources */,
+				6442BD861F2BD66B00670360 /* bunny.1.smesh in Resources */,
 				649145F61E5C465A00CDC48A /* SceneKit Scene.scn in Resources */,
+				6442BD821F2BD66B00670360 /* bunny.1.edge in Resources */,
+				6442BD851F2BD66B00670360 /* bunny.1.node in Resources */,
 				6478F8A21C8C979C00AFB932 /* LaunchScreen.storyboard in Resources */,
 				6478F89F1C8C979C00AFB932 /* Assets.xcassets in Resources */,
 				6478F89D1C8C979C00AFB932 /* Main.storyboard in Resources */,
+				6442BD841F2BD66B00670360 /* bunny.1.face in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,14 +258,14 @@
 				6478F9161C9AB5BB00AFB932 /* DDFileReader.m in Sources */,
 				6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.mm in Sources */,
 				6478F91C1C9ADEFE00AFB932 /* MTKMeshAdapter.mm in Sources */,
-				6422F6171F29FB30003BA368 /* TetgenFileReader.m in Sources */,
+				6422F6171F29FB30003BA368 /* TetgenFileReader.mm in Sources */,
 				6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.mm in Sources */,
 				6478F9191C9AC8DB00AFB932 /* CPUSpringPhysicalSystem.mm in Sources */,
 				6478F8991C8C979C00AFB932 /* Shaders.metal in Sources */,
 				6478F99A1CA136A400AFB932 /* PlaneCollider.mm in Sources */,
 				6478F8E61C9850D800AFB932 /* PhysicalSystem.mm in Sources */,
 				6478F8941C8C979C00AFB932 /* AppDelegate.m in Sources */,
-				6478F8971C8C979C00AFB932 /* GameViewController.m in Sources */,
+				6478F8971C8C979C00AFB932 /* GameViewController.mm in Sources */,
 				6478F8EF1C99787400AFB932 /* SystemState.m in Sources */,
 				6478F8911C8C979C00AFB932 /* main.m in Sources */,
 			);

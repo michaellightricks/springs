@@ -21,7 +21,7 @@ typedef struct
 {
     float4 position [[attribute(0)]];
     float3 normal [[attribute(1)]];
-    float2 texCoords [[attribute(2)]];
+  //float2 texCoords [[attribute(2)]];
 } vertex_t;
 
 typedef struct {
@@ -31,7 +31,7 @@ typedef struct {
 
 // Vertex shader function
 vertex ColorInOut lighting_vertex(vertex_t vertex_array [[stage_in]],
-                                  constant uniforms_t& uniforms [[ buffer(2) ]])
+                                  constant uniforms_t& uniforms [[ buffer(1) ]])
 {
     ColorInOut out;
     

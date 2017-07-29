@@ -15,7 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "277"
             endingLineNumber = "277"
-            landmarkName = "-_compute"
+            landmarkName = "-_reshape"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -102,32 +102,42 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Springs/MTKMeshAdapter.mm"
-            timestampString = "507721372.710652"
+            filePath = "Springs/TetgenFileReader.m"
+            timestampString = "522883943.548892"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
-            landmarkName = "-createSpringElementsBuffer:"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "-loadMesh:device:"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            scope = "0"
+            stopOnStyle = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Springs/MTKMeshAdapter.mm"
-            timestampString = "481643262.29266"
+            filePath = "Springs/GameViewController.mm"
+            timestampString = "522972160.73454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
-            landmarkName = "-addSpringsFromTriangles:"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
+            landmarkName = "-_initPipelineDescriptor"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -14,9 +14,11 @@
 
 
 #import "CPUSpringPhysicalSystem.h"
+#import "MTKMeshAdapter.h"
+#import "TetgenFileReader.h"
 
-@import simd;
-@import ModelIO;
+#import <simd/simd.h>
+#import <ModelIO/ModelIO.h>
 
 // The max number of command buffers in flight
 static const NSUInteger kMaxInflightBuffers = 3;
@@ -107,27 +109,30 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 }
 
 - (void)_initPhysicalSystem {
-  MTKMeshAdapter *adapter = [[MTKMeshAdapter alloc] initWithMesh:mesh device:device];
-
-  SystemState *state = [[SystemState alloc] initWithPositions:adapter.positionsBuffer
-                                                       length:mesh.vertexBuffers[0].length
-                                                       offset:mesh.vertexBuffers[0].offset
-                                                       device:device
-                                                  vertexCount:adapter.verticesCount];
-
-  _physicalSystem = [[CPUSpringPhysicalSystem alloc] initWithState:state
-                                                           springs:adapter.springs];
+//  MTKMeshAdapter *adapter = [[MTKMeshAdapter alloc] initWithMesh:_boxMesh device:_device];
+//
+//  SystemState *state = [[SystemState alloc] initWithPositions:adapter.positionsBuffer
+//                                                       length:_boxMesh.vertexBuffers[0].length
+//                                                       offset:_boxMesh.vertexBuffers[0].offset
+//                                                       device:_device
+//                                                  vertexCount:adapter.verticesCount];
+//
+//  _physicalSystem = [[CPUSpringPhysicalSystem alloc] initWithState:state
+//                                                           springs:adapter->springs];
 }
 
 - (void)_loadAssets
 {
-  // Generate meshes
-  MDLMesh *mdl = [MDLMesh newIcosahedronWithRadius:0.5 inwardNormals:NO
-                                         allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
-
+//  // Generate meshes
+//  MDLMesh *mdl = [MDLMesh newIcosahedronWithRadius:0.5 inwardNormals:NO
+//                                         allocator:[[MTKMeshBufferAllocator alloc] initWithDevice:_device]];
+//
   NSError *error;
-  _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:&error];
-
+//  _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:&error];
+  NSString *path = [[NSBundle mainBundle] pathForResource:@"bunny.1" ofType:@".edge"];
+  NSString *pathWithoutExtension = [path stringByDeletingPathExtension];
+  TetgenFileReader *reader = [[TetgenFileReader alloc] init];
+  _boxMesh = [reader meshFromFiles:pathWithoutExtension device:_device];
   MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
   depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
   depthStateDesc.depthWriteEnabled = YES;
@@ -146,7 +151,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   // Load the vertex program into the library
   id <MTLFunction> vertexProgram = [_defaultLibrary newFunctionWithName:@"lighting_vertex"];
 
-  MTLVertexDescriptor *vertexDescriptor = [self createDescriptor];
+  ///MTLVertexDescriptor *vertexDescriptor = //[self createDescriptor];
   
   // Create a reusable pipeline state
   MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -154,7 +159,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   pipelineStateDescriptor.sampleCount = _view.sampleCount;
   pipelineStateDescriptor.vertexFunction = vertexProgram;
   pipelineStateDescriptor.fragmentFunction = fragmentProgram;
-  pipelineStateDescriptor.vertexDescriptor = vertexDescriptor;
+  pipelineStateDescriptor.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(_boxMesh.vertexDescriptor);//vertexDescriptor;
   pipelineStateDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
   pipelineStateDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
   pipelineStateDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
@@ -239,12 +244,12 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
       // Set context state
       [renderEncoder pushDebugGroup:@"DrawCube"];
       [renderEncoder setRenderPipelineState:_pipelineState];
-      [renderEncoder setVertexBuffer:_physicalSystem.state.positions
-                              offset:_physicalSystem.state.positionsOffset atIndex:0 ];
+//      [renderEncoder setVertexBuffer:_physicalSystem.state.positions
+//                              offset:_physicalSystem.state.positionsOffset atIndex:0 ];
       [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer
-                              offset:_boxMesh.vertexBuffers[0].offset atIndex:1 ];
+                              offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
       [renderEncoder setVertexBuffer:_dynamicConstantBuffer
-                              offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:2 ];
+                              offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:1 ];
       
       MTKSubmesh* submesh = _boxMesh.submeshes[0];
       // Tell the render context we want to draw our primitives
@@ -270,7 +275,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_compute
 {
-  [_physicalSystem integrateTimeStep];
+  //[_physicalSystem integrateTimeStep];
 }
 
 - (void)_reshape

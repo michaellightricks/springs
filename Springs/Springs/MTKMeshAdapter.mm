@@ -14,7 +14,6 @@ typedef struct VertexType {
 } Vertex;
 
 @interface MTKMeshAdapter() {
-  std::vector<SpringElement> springs;
   std::vector<Vertex> vertices;
   std::vector<TriangleElement> triangles;
   
@@ -73,7 +72,7 @@ BOOL hasSpring(Vertex& v, SpringElement& elem) {
 
 - (void)addSpringsToCentroid:(MTKSubmesh *)submesh {
   for (int i = 0; i < submesh.mesh.vertexCount; ++i) {
-    SpringElement element = [self getSpringElementFromIdx1:i idx2:(submesh.mesh.vertexCount)
+    SpringElement element = [self getSpringElementFromIdx1:i idx2:(uint)(submesh.mesh.vertexCount)
                                                          k:(self.K * 2)];
     [self addSpring:element];
   }
