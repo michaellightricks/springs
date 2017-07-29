@@ -43,10 +43,9 @@ NS_ASSUME_NONNULL_BEGIN
     [source addForces:self.state to:(positionType *)[self.state.forces contents]];
   }
 
-  positionType *tempPositions = (positionType *)[[self.state tempPositions] contents];
-  [self.integrator integrateState:self.state timeStep:self.dT to:tempPositions];
+  [self.integrator integrateState:self.state timeStep:self.dT];
   
-  [self.collider collide:self.state intermidiatePositions:tempPositions];
+  [self.collider collide:self.state];
   
   [self.state rollPositions];
 }

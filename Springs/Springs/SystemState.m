@@ -11,20 +11,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation SystemState
 
-- (instancetype)initWithPositions:(id<MTLBuffer>)positionsBuffer length:(NSUInteger)length
-                           offset:(NSUInteger)offset device:(id<MTLDevice>)device
+- (instancetype)initWithPositions:(id<MTLBuffer>)positionsBuffer
+                           offset:(NSUInteger)offset stride:(NSUInteger)stride
+                           device:(id<MTLDevice>)device
                       vertexCount:(NSUInteger)count {
   if (self = [super init]) {
     _verticesCount = count ;
     self.positionsOffset = offset;
     self.positions = positionsBuffer;
+    self.stride = stride;
     
     void *ptr = [positionsBuffer contents];
     
     self.prevPositions =
-        [device newBufferWithBytes:ptr length:length options:0];
+        [device newBufferWithBytes:ptr length:positionsBuffer.length options:0];
     self.tempPositions =
-        [device newBufferWithBytes:ptr length:length options:0];
+        [device newBufferWithBytes:ptr length:positionsBuffer.length options:0];
     
     self.forces = [device newBufferWithLength:sizeof(positionType) * _verticesCount  options:0];
     self.pinned = [device newBufferWithLength:(sizeof(BOOL) * _verticesCount) options:0];
@@ -33,33 +35,18 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
-- (instancetype)initWithPositionsBuffer:(id<MTLBuffer>)buffer verticesCount:(NSUInteger)count
-                                 device:(id<MTLDevice>)device {
-  if (self = [super init]) {
-    _verticesCount = count;
-    
-    self.positions = buffer;
-    self.prevPositions =
-        [device newBufferWithBytes:[buffer contents] length:buffer.length options:0];
-    
-    self.forces = [device newBufferWithLength:(sizeof(positionType) * _verticesCount)  options:0];
-    self.pinned = [device newBufferWithLength:(sizeof(BOOL) * _verticesCount) options:0];
-  }
-  
-  return self;
-
-}
-
 - (void)pinVertexAtIndex:(NSUInteger)index atPosition:(positionType)newPosition {
   BOOL *buffer = (BOOL *)[self.pinned contents];
   
   buffer[index] = YES;
 
   positionType *position = [self getPositionFrom:self.positions atIndex:index
+                                          stride:self.stride
                                           offset:self.positionsOffset];
   *position = newPosition;
   
   positionType *prevPosition = [self getPositionFrom:self.prevPositions atIndex:index
+                                              stride:self.stride
                                               offset:self.positionsOffset];
   *prevPosition = newPosition;
 }
@@ -87,23 +74,36 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (positionType)getPositionAtIndex:(NSUInteger)index {
-  return *[self getPositionFrom:self.positions atIndex:index offset:self.positionsOffset];
+  return *[self getPositionFrom:self.positions atIndex:index stride:self.stride
+                         offset:self.positionsOffset];
 }
 
 - (positionType)getPrevPositionAtIndex:(NSUInteger)index {
-  return *[self getPositionFrom:self.prevPositions atIndex:index offset:self.positionsOffset];
+  return *[self getPositionFrom:self.prevPositions atIndex:index stride:self.stride
+                         offset:self.positionsOffset];
+}
+
+- (void)setTempPosition:(positionType)position AtIndex:(NSUInteger)index {
+  *[self getPositionFrom:self.tempPositions atIndex:index stride:self.stride
+                  offset:self.positionsOffset] = position;
+}
+
+- (positionType)getTempPositionAtIndex:(NSUInteger)index {
+  return *[self getPositionFrom:self.tempPositions atIndex:index stride:self.stride
+                         offset:self.positionsOffset];
 }
 
 - (positionType)getForceAtIndex:(NSUInteger)index {
-  return *[self getPositionFrom:self.forces atIndex:index offset:0];
+  return *[self getPositionFrom:self.forces atIndex:index stride:sizeof(positionType) offset:0];
 }
 
 - (positionType *)getPositionFrom:(id<MTLBuffer>)buffer atIndex:(NSUInteger)index
+                           stride:(NSUInteger)stride
                            offset:(NSUInteger)offset{
-  void *ptr = [buffer contents];
- 
-  positionType *posPtr = (positionType *) (ptr + offset);
-  return posPtr + index;
+  uint8_t *ptr = [buffer contents];
+  ptr = ptr + offset + index * stride;
+
+  return (positionType *) (ptr);
 }
 
 @end

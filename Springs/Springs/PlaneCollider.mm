@@ -46,18 +46,17 @@ typedef struct PlaneType {
   return self;
 }
 
-- (void)collide:(SystemState *)state intermidiatePositions:(positionType *)positions {
+- (void)collide:(SystemState *)state {
   for (int i = 0; i < state.verticesCount; ++i) {
     positionType prevPos = [state getPositionAtIndex:i];
-    positionType& pos = positions[i];
-    
+    positionType pos = [state getTempPositionAtIndex:i];
     for (int j = 0; j < planes.size(); ++j) {
       Plane plane = planes[j];
       
       float d = simd::dot(plane.normal, pos) + plane.d;
       
       if (d < 0.0) { // we have collision
-        pos = [self intersectPlane:plane segmentStart:prevPos end:pos];
+        [state setTempPosition:[self intersectPlane:plane segmentStart:prevPos end:pos] AtIndex:i];
       }
     }
   }

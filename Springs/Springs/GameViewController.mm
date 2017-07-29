@@ -28,6 +28,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 @implementation GameViewController
 {
+  TetgenFileReader *_reader;
   // view
   MTKView *_view;
   
@@ -116,9 +117,9 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 //                                                       offset:_boxMesh.vertexBuffers[0].offset
 //                                                       device:_device
 //                                                  vertexCount:adapter.verticesCount];
-//
-//  _physicalSystem = [[CPUSpringPhysicalSystem alloc] initWithState:state
-//                                                           springs:adapter->springs];
+
+  _physicalSystem = [[CPUSpringPhysicalSystem alloc] initWithState:_reader.state
+                                                           springs:_reader.springs];
 }
 
 - (void)_loadAssets
@@ -131,8 +132,10 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 //  _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:&error];
   NSString *path = [[NSBundle mainBundle] pathForResource:@"bunny.1" ofType:@".edge"];
   NSString *pathWithoutExtension = [path stringByDeletingPathExtension];
-  TetgenFileReader *reader = [[TetgenFileReader alloc] init];
-  _boxMesh = [reader meshFromFiles:pathWithoutExtension device:_device];
+  _reader = [[TetgenFileReader alloc] initWithFilePathPrefix:pathWithoutExtension
+                                                      device:_device];
+  _boxMesh = _reader.mesh;
+
   MTLDepthStencilDescriptor *depthStateDesc = [[MTLDepthStencilDescriptor alloc] init];
   depthStateDesc.depthCompareFunction = MTLCompareFunctionLess;
   depthStateDesc.depthWriteEnabled = YES;
@@ -151,15 +154,13 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   // Load the vertex program into the library
   id <MTLFunction> vertexProgram = [_defaultLibrary newFunctionWithName:@"lighting_vertex"];
 
-  ///MTLVertexDescriptor *vertexDescriptor = //[self createDescriptor];
-  
   // Create a reusable pipeline state
   MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
   pipelineStateDescriptor.label = @"MyPipeline";
   pipelineStateDescriptor.sampleCount = _view.sampleCount;
   pipelineStateDescriptor.vertexFunction = vertexProgram;
   pipelineStateDescriptor.fragmentFunction = fragmentProgram;
-  pipelineStateDescriptor.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(_boxMesh.vertexDescriptor);//vertexDescriptor;
+  pipelineStateDescriptor.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(_boxMesh.vertexDescriptor);
   pipelineStateDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
   pipelineStateDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
   pipelineStateDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
@@ -275,7 +276,7 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_compute
 {
-  //[_physicalSystem integrateTimeStep];
+  [_physicalSystem integrateTimeStep];
 }
 
 - (void)_reshape

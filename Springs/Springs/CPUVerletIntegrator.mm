@@ -23,7 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDamping:(float)damping {
   if (self = [super init]) {
     self.D = damping;
-    _motionManager = [[CMMotionManager alloc] init];
+    _G = simd::float4(0);
+     _motionManager = [[CMMotionManager alloc] init];
     self.motionManager.accelerometerUpdateInterval = 0.1;
     [self.motionManager
       startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue]
@@ -38,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
-- (void)integrateState:(SystemState *)state timeStep:(float)dt to:(positionType *)newPosition{
+- (void)integrateState:(SystemState *)state timeStep:(float)dt {
   float squareDT = dt * dt;
   
   float sqLengthMax = 0;
@@ -56,8 +57,9 @@ NS_ASSUME_NONNULL_BEGIN
     if (sqLength > sqLengthMax && sqLength > 100) {
       sqLengthMax = sqLength;
     }
-    
-    newPosition[i] = (2 - self.D) * pos - (1 - self.D) * prevPos + squareDT * force;
+
+    positionType newPos = (2 - self.D) * pos - (1 - self.D) * prevPos + squareDT * force;
+    [state setTempPosition:newPos AtIndex:i];
   }
   
   if (sqLengthMax > 100) {

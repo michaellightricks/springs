@@ -5,13 +5,22 @@
 #import <Metal/Metal.h>
 #import <MetalKit/MetalKit.h>
 #import <ModelIO/ModelIO.h>
+#import <vector>
 #import "Definitions.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class SystemState;
+
 @interface TetgenFileReader : NSObject
 
-- (MTKMesh *)meshFromFiles:(NSString *)fileNamePattern device:(id<MTLDevice>)device;
+- (instancetype)initWithFilePathPrefix:(NSString *)prefix device:(id<MTLDevice>)device;
+
+@property (readonly, nonatomic) MTKMesh *mesh;
+
+@property (readonly, nonatomic) std::vector<SpringElement> &springs;
+
+@property (readonly, nonatomic) SystemState *state;
 
 @end
 

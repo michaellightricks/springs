@@ -9,7 +9,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol Integrator <NSObject>
 
-- (void)integrateState:(SystemState *)state timeStep:(float)dt to:(positionType *)newPosition;
+/// Sets new positions to tempPositions of state.
+- (void)integrateState:(SystemState *)state timeStep:(float)dt;
 
 @end
 
@@ -21,7 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol Collider <NSObject>
 
-- (void)collide:(SystemState *)state intermidiatePositions:(positionType *)positions;
+/// Sets new positions to tempPositions of state.
+- (void)collide:(SystemState *)state;
 
 @end
 

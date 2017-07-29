@@ -10,13 +10,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SystemState : NSObject
 
-- (instancetype)initWithPositions:(id<MTLBuffer>)positionsBuffer length:(NSUInteger)length
-                           offset:(NSUInteger)offset device:(id<MTLDevice>)device
+- (instancetype)initWithPositions:(id<MTLBuffer>)positionsBuffer
+                           offset:(NSUInteger)offset stride:(NSUInteger)stride
+                           device:(id<MTLDevice>)device
                       vertexCount:(NSUInteger)count;
 
 - (positionType)getPositionAtIndex:(NSUInteger)index;
 
 - (positionType)getPrevPositionAtIndex:(NSUInteger)index;
+
+- (positionType)getTempPositionAtIndex:(NSUInteger)index;
+
+- (void)setTempPosition:(positionType)position AtIndex:(NSUInteger)index;
 
 - (positionType)getForceAtIndex:(NSUInteger)index;
 
@@ -31,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)zeroForces;
 
 @property (nonatomic) NSUInteger positionsOffset;
+@property (nonatomic) NSUInteger stride;
 @property (nonatomic) NSUInteger verticesCount;
 @property (strong, nonatomic) id<MTLBuffer> positions;
 @property (strong, nonatomic) id<MTLBuffer> prevPositions;

@@ -7,18 +7,45 @@
 #import <MetalKit/MetalKit.h>
 
 #import "DDFileReader.h"
+#import "SystemState.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@" \t"];
 
+@interface TetgenFileReader () {
+  std::vector<SpringElement> _springs;
+}
+
+@property (readonly, nonatomic) id<MTLDevice> device;
+
+@property (readonly, nonatomic) NSString *prefix;
+
+@property (readonly, nonatomic) NSUInteger positionsNumber;
+
+@end
+
 @implementation TetgenFileReader
 
-- (MTKMesh *)meshFromFiles:(NSString *)fileNamePattern device:(id<MTLDevice>)device {
-  MDLMesh *mdlMesh = [self loadMesh:fileNamePattern device:device];
-  NSError *error;
-  MTKMesh *mesh = [[MTKMesh alloc] initWithMesh:mdlMesh device:device error:&error];
-  return mesh;
+@synthesize mesh = _mesh;
+@synthesize state = _state;
+
+- (instancetype)initWithFilePathPrefix:(NSString *)prefix device:(id<MTLDevice>)device {
+  if (self = [super init]) {
+    _device = device;
+    _prefix = prefix;
+  }
+
+  return self;
+}
+
+- (MTKMesh *)mesh {
+  if (_mesh == nil) {
+    MDLMesh *mdlMesh = [self loadMesh:self.prefix device:self.device];
+    NSError *error;
+    _mesh = [[MTKMesh alloc] initWithMesh:mdlMesh device:self.device error:&error];
+  }
+  return _mesh;
 }
 
 - (MDLMesh *)loadMesh:(NSString *)fileNamePattern device:(id<MTLDevice>)device {
@@ -35,29 +62,24 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
                                      format:MDLVertexFormatFloat3
                                      offset:sizeof(float) * 4 bufferIndex:0];
   [descriptor addOrReplaceAttribute:normalsAttr];
-//  MDLVertexAttribute *textureAttr = [[MDLVertexAttribute alloc]
-//                                     initWithName:MDLVertexAttributeTextureCoordinate
-//                                     format:MDLVertexFormatFloat2
-//                                     offset:sizeof(float) * 7 bufferIndex:0];
-//  [descriptor addOrReplaceAttribute:textureAttr];
-//[descriptor.layouts addObject:[[MDLVertexBufferLayout alloc] initWithStride:sizeof(float) * 7]];
   [descriptor setPackedStrides];
   [descriptor setPackedOffsets];
 
   NSString *node = [NSString stringWithFormat:@"%@.node", fileNamePattern];
   DDFileReader *reader = [[DDFileReader alloc] initWithFilePath:node];
   NSString *header = [reader readLine];
-  NSUInteger positionsNumber = [[header componentsSeparatedByCharactersInSet:kCharacterSet][0]
-                                integerValue];
+  _positionsNumber = [[header componentsSeparatedByCharactersInSet:kCharacterSet][0]
+                      integerValue];
   MTKMeshBufferAllocator *allocator = [[MTKMeshBufferAllocator alloc] initWithDevice:device];
   id<MDLMeshBuffer> vertexBuffer = [self loadPositionsWithReader:reader
-                                                 positionsNumber:positionsNumber
+                                                 positionsNumber:self.positionsNumber
                                                        allocator:allocator];
 
   NSString *face = [NSString stringWithFormat:@"%@.face", fileNamePattern];
   DDFileReader *faceReader = [[DDFileReader alloc] initWithFilePath:face];
   MDLSubmesh *submesh = [self loadFacesWithReader:faceReader allocator:allocator];
-  MDLMesh *mdlMesh = [[MDLMesh alloc] initWithVertexBuffer:vertexBuffer vertexCount:positionsNumber
+  MDLMesh *mdlMesh = [[MDLMesh alloc] initWithVertexBuffer:vertexBuffer
+                                               vertexCount:self.positionsNumber
                                                 descriptor:descriptor submeshes:@[submesh]];
   [mdlMesh addNormalsWithAttributeNamed:MDLVertexAttributeNormal
                         creaseThreshold:1.0];
@@ -110,7 +132,8 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
   id<MDLMeshBuffer> meshBuffer = [allocator
                                   newBuffer:sizeof(uint32_t) * 3 * facesNumber
                                   type:MDLMeshBufferTypeIndex];
-  MDLSubmesh *submesh = [[MDLSubmesh alloc] initWithIndexBuffer:meshBuffer indexCount:facesNumber * 3
+  MDLSubmesh *submesh = [[MDLSubmesh alloc] initWithIndexBuffer:meshBuffer
+                                                     indexCount:facesNumber * 3
                                                       indexType:MDLIndexBitDepthUInt32
                                                    geometryType:MDLGeometryTypeTriangles
                                                        material:nil];
@@ -129,6 +152,54 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
 
   delete [] indices;
   return submesh;
+}
+
+- (std::vector<SpringElement> &)springs {
+  if (_springs.size() == 0) {
+    [self fillSprings:_springs];
+  }
+
+  return _springs;
+}
+
+- (void)fillSprings:(std::vector<SpringElement> &)springs {
+  NSString *fileName = [NSString stringWithFormat:@"%@.edge", self.prefix];
+  DDFileReader *reader = [[DDFileReader alloc] initWithFilePath:fileName];
+  NSArray<NSString *> *components = [self componentsFromString:[reader readLine]];
+  NSUInteger springsNumber = [components[0] integerValue];
+  springs.reserve(springsNumber);
+
+  MTKMeshBuffer *meshBuffer = self.mesh.vertexBuffers[0];
+  uint8_t *ptr = (uint8_t *)[meshBuffer.buffer contents] + meshBuffer.offset;
+  float *positions = (float *)ptr;
+  for (int i = 0; i < springsNumber; ++i) {
+    NSArray<NSString *> *springComponents = [self componentsFromString:[reader readLine]];
+    NSUInteger idx1 = [springComponents[1] integerValue];
+    NSUInteger idx2 = [springComponents[2] integerValue];
+
+    simd::float4 position1 = *(simd::float4 *)(positions + idx1 * 7);
+    simd::float4 position2 = *(simd::float4 *)(positions + idx2 * 7);
+
+    float restLength = simd::distance(position1, position2);
+
+    SpringElement element;
+    element.idx1 = idx1;
+    element.idx2 = idx2;
+    element.restLength = restLength;
+    element.k = 500;
+    springs.push_back(element);
+  }
+}
+
+- (SystemState *)state {
+  if (!_state) {
+    _state = [[SystemState alloc] initWithPositions:self.mesh.vertexBuffers[0].buffer
+                                             offset:0 stride:sizeof(float) * 7
+                                             device:self.device
+                                        vertexCount:self.positionsNumber];
+  }
+
+  return _state;
 }
 
 @end

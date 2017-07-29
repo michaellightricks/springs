@@ -27,8 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
-- (void)addForces:(SystemState *)state to:(positionType *)forces{
-  
+- (void)addForces:(SystemState *)state to:(positionType *)forces{  
   for (size_t i = 0; i < self.elementsCount; ++i) {
     SpringElement element = self.elements[i];
     

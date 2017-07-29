@@ -13,9 +13,9 @@
 using namespace metal;
 
 // Variables in constant address space
-constant float3 light_position = float3(0.0, 1.0, -1.0);
+constant float3 light_position = float3(0.0, -1.0, 0.5);
 constant float4 ambient_color  = float4(0.18, 0.24, 0.8, 1.0);
-constant float4 diffuse_color  = float4(0.4, 0.4, 1.0, 1.0);
+constant float4 diffuse_color  = float4(0.2, 0.2, 0.5, 1.0);
 
 typedef struct
 {
@@ -41,7 +41,7 @@ vertex ColorInOut lighting_vertex(vertex_t vertex_array [[stage_in]],
     float n_dot_l = dot(eye_normal.rgb, normalize(light_position));
     n_dot_l = fmax(0.0, n_dot_l);
     
-    out.color = half4(ambient_color + diffuse_color * n_dot_l);
+    out.color = pow(half4(0.8 * ambient_color + diffuse_color * n_dot_l), 2);
     return out;
 }
 
