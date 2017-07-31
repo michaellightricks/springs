@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     self.forces = [device newBufferWithLength:sizeof(positionType) * _verticesCount  options:0];
     self.pinned = [device newBufferWithLength:(sizeof(BOOL) * _verticesCount) options:0];
+    memset([self.pinned contents], sizeof(BOOL) * _verticesCount, 0);
   }
   
   return self;
@@ -100,7 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (positionType *)getPositionFrom:(id<MTLBuffer>)buffer atIndex:(NSUInteger)index
                            stride:(NSUInteger)stride
                            offset:(NSUInteger)offset{
-  uint8_t *ptr = [buffer contents];
+  uint8_t *ptr = (uint8_t *)[buffer contents];
   ptr = ptr + offset + index * stride;
 
   return (positionType *) (ptr);

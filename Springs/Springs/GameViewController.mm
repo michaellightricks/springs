@@ -173,45 +173,45 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
   }
 }
 
-- (MTLVertexDescriptor *)createDescriptor {
-  MTLVertexDescriptor *result = [[MTLVertexDescriptor alloc] init];
-  
-  // layout we will have 2 separate buffers
-  // buffer for positions - dynamically updated each frame
-  // buffer for normals and texture coordinates - static
-  MTLVertexBufferLayoutDescriptor *posLayout = [[MTLVertexBufferLayoutDescriptor alloc] init];
-  posLayout.stride = sizeof(positionType);
-  posLayout.stepRate = 1;
-  posLayout.stepFunction = MTLVertexStepFunctionPerVertex;
-
-  [result.layouts setObject:posLayout atIndexedSubscript:0];
-  
-  MTLVertexBufferLayoutDescriptor *normalsLayout = [[MTLVertexBufferLayoutDescriptor alloc] init];
-  normalsLayout.stride = sizeof(float) * 6 + sizeof(vector_float2);
-  normalsLayout.stepRate = 1;
-  normalsLayout.stepFunction = MTLVertexStepFunctionPerVertex;
-  
-  [result.layouts setObject:normalsLayout atIndexedSubscript:1];
-
-  // positions
-  MTLVertexAttributeDescriptor *posAttrDesc = [[MTLVertexAttributeDescriptor alloc] init];
-  posAttrDesc.bufferIndex = 0;
-  posAttrDesc.offset = 0;
-  posAttrDesc.format = MTLVertexFormatFloat4;
-  
-  [result.attributes setObject:posAttrDesc  atIndexedSubscript:0];
-  
-  // normals
-  MTLVertexAttributeDescriptor *normalsAttrDesc = [[MTLVertexAttributeDescriptor alloc] init];
-  normalsAttrDesc.bufferIndex = 1;
-  normalsAttrDesc.offset = sizeof(float) * 3;
-  normalsAttrDesc.format = MTLVertexFormatFloat3;
-  
-  
-  [result.attributes setObject:normalsAttrDesc  atIndexedSubscript:1];
-  
-  return result;
-}
+//- (MTLVertexDescriptor *)createDescriptor {
+//  MTLVertexDescriptor *result = [[MTLVertexDescriptor alloc] init];
+//  
+//  // layout we will have 2 separate buffers
+//  // buffer for positions - dynamically updated each frame
+//  // buffer for normals and texture coordinates - static
+//  MTLVertexBufferLayoutDescriptor *posLayout = [[MTLVertexBufferLayoutDescriptor alloc] init];
+//  posLayout.stride = sizeof(positionType);
+//  posLayout.stepRate = 1;
+//  posLayout.stepFunction = MTLVertexStepFunctionPerVertex;
+//
+//  [result.layouts setObject:posLayout atIndexedSubscript:0];
+//  
+//  MTLVertexBufferLayoutDescriptor *normalsLayout = [[MTLVertexBufferLayoutDescriptor alloc] init];
+//  normalsLayout.stride = sizeof(float) * 6 + sizeof(vector_float2);
+//  normalsLayout.stepRate = 1;
+//  normalsLayout.stepFunction = MTLVertexStepFunctionPerVertex;
+//  
+//  [result.layouts setObject:normalsLayout atIndexedSubscript:1];
+//
+//  // positions
+//  MTLVertexAttributeDescriptor *posAttrDesc = [[MTLVertexAttributeDescriptor alloc] init];
+//  posAttrDesc.bufferIndex = 0;
+//  posAttrDesc.offset = 0;
+//  posAttrDesc.format = MTLVertexFormatFloat4;
+//  
+//  [result.attributes setObject:posAttrDesc  atIndexedSubscript:0];
+//  
+//  // normals
+//  MTLVertexAttributeDescriptor *normalsAttrDesc = [[MTLVertexAttributeDescriptor alloc] init];
+//  normalsAttrDesc.bufferIndex = 1;
+//  normalsAttrDesc.offset = sizeof(float) * 3;
+//  normalsAttrDesc.format = MTLVertexFormatFloat3;
+//  
+//  
+//  [result.attributes setObject:normalsAttrDesc  atIndexedSubscript:1];
+//  
+//  return result;
+//}
 
 - (void)_render
 {
@@ -245,10 +245,10 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
       // Set context state
       [renderEncoder pushDebugGroup:@"DrawCube"];
       [renderEncoder setRenderPipelineState:_pipelineState];
-//      [renderEncoder setVertexBuffer:_physicalSystem.state.positions
-//                              offset:_physicalSystem.state.positionsOffset atIndex:0 ];
-      [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer
-                              offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
+      [renderEncoder setVertexBuffer:_physicalSystem.state.positions
+                              offset:_physicalSystem.state.positionsOffset atIndex:0 ];
+//      [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer
+//                              offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
       [renderEncoder setVertexBuffer:_dynamicConstantBuffer
                               offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:1 ];
       

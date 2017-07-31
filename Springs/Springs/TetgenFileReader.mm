@@ -28,6 +28,8 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
 @implementation TetgenFileReader
 
 @synthesize mesh = _mesh;
+//@synthesize vertexBuffer = _vertexBuffer;
+//@synthesize submesh = _submesh;
 @synthesize state = _state;
 
 - (instancetype)initWithFilePathPrefix:(NSString *)prefix device:(id<MTLDevice>)device {
@@ -47,6 +49,21 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
   }
   return _mesh;
 }
+
+//- (id<MTLBuffer>)vertexBuffer {
+//  if (!_vertexBuffer) {
+//  NSString *node = [NSString stringWithFormat:@"%@.node", self.prefix];
+//  DDFileReader *reader = [[DDFileReader alloc] initWithFilePath:node];
+//  NSString *header = [reader readLine];
+//  _positionsNumber = [[header componentsSeparatedByCharactersInSet:kCharacterSet][0]
+//                      integerValue];
+//  MTKMeshBufferAllocator *allocator = [[MTKMeshBufferAllocator alloc] initWithDevice:self.device];
+//  _vertexBuffer = [self loadPositionsWithReader:reader
+//                                positionsNumber:self.positionsNumber
+//                                      allocator:allocator];
+//  }
+//  return _vertexBuffer;
+//}
 
 - (MDLMesh *)loadMesh:(NSString *)fileNamePattern device:(id<MTLDevice>)device {
   MDLVertexDescriptor *descriptor = [[MDLVertexDescriptor alloc] init];
@@ -81,15 +98,13 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
   MDLMesh *mdlMesh = [[MDLMesh alloc] initWithVertexBuffer:vertexBuffer
                                                vertexCount:self.positionsNumber
                                                 descriptor:descriptor submeshes:@[submesh]];
-  [mdlMesh addNormalsWithAttributeNamed:MDLVertexAttributeNormal
-                        creaseThreshold:1.0];
 
   return mdlMesh;
 }
 
 - (id<MDLMeshBuffer>)loadPositionsWithReader:(DDFileReader *)reader
-                             positionsNumber:(NSUInteger)positionsNumber
-                                   allocator:(MTKMeshBufferAllocator *)allocator {
+                         positionsNumber:(NSUInteger)positionsNumber
+                               allocator:(MTKMeshBufferAllocator *)allocator {
   id<MDLMeshBuffer> vertexBuffer = [allocator
                                     newBuffer:sizeof(float) * 7 * positionsNumber
                                     type:MDLMeshBufferTypeVertex];
@@ -105,9 +120,9 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
     float z = [components[3] floatValue];
     ptr[i * 7 + 2] = 10 * z;
     ptr[i * 7 + 3] = 1;
-    ptr[i * 7 + 4] = 0;
-    ptr[i * 7 + 5] = 0;
-    ptr[i * 7 + 6] = 0;
+    ptr[i * 7 + 4] = 1;
+    ptr[i * 7 + 5] = 1;
+    ptr[i * 7 + 6] = 1;
   }
 
   [vertexBuffer fillData:[NSData dataWithBytes:ptr
@@ -169,8 +184,8 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
   NSUInteger springsNumber = [components[0] integerValue];
   springs.reserve(springsNumber);
 
-  MTKMeshBuffer *meshBuffer = self.mesh.vertexBuffers[0];
-  uint8_t *ptr = (uint8_t *)[meshBuffer.buffer contents] + meshBuffer.offset;
+  MTKMeshBuffer *vertexBuffer = self.mesh.vertexBuffers[0];
+  uint8_t *ptr = (uint8_t *)[vertexBuffer.buffer contents] + vertexBuffer.offset;
   float *positions = (float *)ptr;
   for (int i = 0; i < springsNumber; ++i) {
     NSArray<NSString *> *springComponents = [self componentsFromString:[reader readLine]];
@@ -186,7 +201,7 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
     element.idx1 = idx1;
     element.idx2 = idx2;
     element.restLength = restLength;
-    element.k = 500;
+    element.k = 2500;
     springs.push_back(element);
   }
 }

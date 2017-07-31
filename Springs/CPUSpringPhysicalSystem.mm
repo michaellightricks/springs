@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithState:(SystemState *)state
                       springs:(const std::vector<SpringElement> &)springs {
-  CPUVerletIntegrator *integrator = [[CPUVerletIntegrator alloc] initWithDamping:0.15];
+  CPUVerletIntegrator *integrator = [[CPUVerletIntegrator alloc] initWithDamping:0.3];
   positionType origin;
   origin.x = origin.y = origin.z = 0.0;
   origin.w = 1.0;

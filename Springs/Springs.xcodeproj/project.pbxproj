@@ -24,7 +24,7 @@
 		6478F89F1C8C979C00AFB932 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6478F89E1C8C979C00AFB932 /* Assets.xcassets */; };
 		6478F8A21C8C979C00AFB932 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6478F8A01C8C979C00AFB932 /* LaunchScreen.storyboard */; };
 		6478F8E61C9850D800AFB932 /* PhysicalSystem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8E51C9850D800AFB932 /* PhysicalSystem.mm */; };
-		6478F8EF1C99787400AFB932 /* SystemState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8EE1C99787400AFB932 /* SystemState.m */; };
+		6478F8EF1C99787400AFB932 /* SystemState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8EE1C99787400AFB932 /* SystemState.mm */; };
 		6478F8F21C997A7D00AFB932 /* CPUVerletIntegrator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.mm */; };
 		6478F90B1C99CE0000AFB932 /* CPUSpringForcesSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6478F90A1C99CE0000AFB932 /* CPUSpringForcesSource.mm */; };
 		6478F9161C9AB5BB00AFB932 /* DDFileReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6478F9151C9AB5BB00AFB932 /* DDFileReader.m */; };
@@ -61,7 +61,7 @@
 		6478F8E41C9850D800AFB932 /* PhysicalSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhysicalSystem.h; sourceTree = "<group>"; };
 		6478F8E51C9850D800AFB932 /* PhysicalSystem.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PhysicalSystem.mm; sourceTree = "<group>"; };
 		6478F8ED1C99787400AFB932 /* SystemState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemState.h; sourceTree = "<group>"; };
-		6478F8EE1C99787400AFB932 /* SystemState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SystemState.m; sourceTree = "<group>"; };
+		6478F8EE1C99787400AFB932 /* SystemState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SystemState.mm; sourceTree = "<group>"; };
 		6478F8F01C997A7D00AFB932 /* CPUVerletIntegrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPUVerletIntegrator.h; sourceTree = "<group>"; };
 		6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CPUVerletIntegrator.mm; sourceTree = "<group>"; };
 		6478F8F31C997ABA00AFB932 /* Protocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Protocols.h; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 				6478F8A31C8C979C00AFB932 /* Info.plist */,
 				6478F88F1C8C979C00AFB932 /* Supporting Files */,
 				6478F8ED1C99787400AFB932 /* SystemState.h */,
-				6478F8EE1C99787400AFB932 /* SystemState.m */,
+				6478F8EE1C99787400AFB932 /* SystemState.mm */,
 				6478F8F01C997A7D00AFB932 /* CPUVerletIntegrator.h */,
 				6478F8F11C997A7D00AFB932 /* CPUVerletIntegrator.mm */,
 				649145F51E5C465A00CDC48A /* SceneKit Scene.scn */,
@@ -266,7 +266,7 @@
 				6478F8E61C9850D800AFB932 /* PhysicalSystem.mm in Sources */,
 				6478F8941C8C979C00AFB932 /* AppDelegate.m in Sources */,
 				6478F8971C8C979C00AFB932 /* GameViewController.mm in Sources */,
-				6478F8EF1C99787400AFB932 /* SystemState.m in Sources */,
+				6478F8EF1C99787400AFB932 /* SystemState.mm in Sources */,
 				6478F8911C8C979C00AFB932 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

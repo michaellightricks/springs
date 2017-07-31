@@ -30,9 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
       startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue]
       withHandler:^(CMAccelerometerData * _Nullable accelerometerData,
                                          NSError * _Nullable error) {
-        self->_G.x = 9.8 * accelerometerData.acceleration.x;
-        self->_G.y = 9.8 * accelerometerData.acceleration.y;
-        self->_G.z = -9.8 * accelerometerData.acceleration.z;
+        self->_G.x = 0;//9.8 * accelerometerData.acceleration.x;
+        self->_G.y = -9.8;// * accelerometerData.acceleration.y;
+        self->_G.z = 0;//-9.8 * accelerometerData.acceleration.z;
     }];
   }
   
@@ -44,8 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
   
   float sqLengthMax = 0;
   for (int i = 0; i < state.verticesCount; ++i) {
-    if ([state vertexPinned:i]) {
-    //if (i == 0) {
+    //if ([state vertexPinned:i]) {
+    if (i == 0) {
       continue;
     }
 
