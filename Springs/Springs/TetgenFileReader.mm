@@ -201,7 +201,7 @@ NSCharacterSet *kCharacterSet = [NSCharacterSet characterSetWithCharactersInStri
     element.idx1 = idx1;
     element.idx2 = idx2;
     element.restLength = restLength;
-    element.k = 2500;
+    element.k = 500;
     springs.push_back(element);
   }
 }

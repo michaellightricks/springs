@@ -276,7 +276,9 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_compute
 {
+  //for (int i = 0; i < 2; ++i) {
   [_physicalSystem integrateTimeStep];
+  //}
 }
 
 - (void)_reshape
